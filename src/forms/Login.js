@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import { Link } from "react-router-dom";
+import logo from "../assets/logo_withBackgroundRemover.png";
 
 export default function Login() {
   const [visiblePass, setVisiblePass] = useState(false);
@@ -17,21 +18,14 @@ export default function Login() {
           {/* Left: Image */}
           <div className="hidden md:flex md:w-full bg-gray-300 rounded-l-lg overflow-hidden">
             <img
-              src="https://img.freepik.com/free-photo/top-view-payroll-concept-with-items_23-2149103952.jpg?t=st=1729961902~exp=1729965502~hmac=0edfad942783691dc962d2845a03a3d42aa1f37db564b9485befcbfa5c995a71&w=996"
+              src={logo}
               alt="Image"
-              className="object-contain w-full h-full"
+              className="object-contain mx-auto h-100 "
             />
           </div>
           {/* Right: Login Form */}
           <div className="flex flex-col shadow-xl justify-center items-center md:w-1/2 p-8 sm:p-12">
             <div className="w-full">
-              <div className="flex justify-center mb-4">
-                <img
-                  src="https://img.freepik.com/free-photo/top-view-payroll-concept-with-items_23-2149103952.jpg?t=st=1729961902~exp=1729965502~hmac=0edfad942783691dc962d2845a03a3d42aa1f37db564b9485befcbfa5c995a71&w=996"
-                  alt="payroll_picture"
-                  className="h-28"
-                />
-              </div>
               <h2 className="text-center text-xl font-extrabold text-gray-900 mb-2">
                 Welcome to Payroll Information Management System
               </h2>
@@ -160,16 +154,13 @@ export default function Login() {
                   </div>
                 )}
 
-                {/* Remember Me Checkbox */}
-                <div className="flex items-center justify-between text-sm">
+                {/* <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center">
-                    {/* <Link to="/forgot-password"> */}
                       <label className="font-medium text-md cursor-pointer text-red-500 hover:text-red-600">
                         Forgot Password
                       </label>
-                    {/* </Link> */}
                   </div>
-                </div>
+                </div> */}
 
                 {/* Login Button */}
                 <button

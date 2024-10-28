@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 import Login from "./forms/Login";
 import Register from "./forms/Register";
+import Dashboard from "./pages/GetStarted/Dashboard";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/getstarted" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
   );
