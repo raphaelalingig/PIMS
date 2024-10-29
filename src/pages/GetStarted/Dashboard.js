@@ -3,6 +3,7 @@ import Navbar from "../../components/Navbar";
 import AddEmployee from "./DashboardTableActions/AddEmployee";
 import Swal from "sweetalert2";
 import EditEmployee from "./DashboardTableActions/EditEmployee";
+import DashboardReports from "./DashboardTableActions/DashboardReports";
 
 export default function Dashboard() {
   const [isAddEmployeeModalOpen, setIsAddEmployeeModalOpen] = useState(false);
@@ -10,6 +11,16 @@ export default function Dashboard() {
   const [employeeData, setEmployeeData] = useState([]);
   const [isEditEmployeeModalOpen, setIsEditEmployeeModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+
+  const [dashboardMetrics, setDashboardMetrics] = useState({
+    totalSalary: 0,
+    totalEmployees: 0,
+    paymentStatusTotals: {
+      paid: 0,
+      pending: 0,
+      onHold: 0,
+    },
+  });
 
   const [editEmployeeDetails, setEditEmployeeDetails] = useState({
     id: 0,
@@ -29,6 +40,11 @@ export default function Dashboard() {
     deductionsAmount: 0,
     salaryDate: new Date(),
   });
+
+  useEffect(() => {
+    const metrics = getDashboardMetrics(employeeData);
+    setDashboardMetrics(metrics);
+  }, [employeeData]);
 
   const filteredEmployees = employeeData.filter((employee) => {
     const searchTermLower = searchTerm.toLowerCase();
@@ -143,11 +159,95 @@ export default function Dashboard() {
     });
   };
 
+  const calculateTotalSalary = (employees) => {
+    return employees.reduce((total, employee) => {
+      // Convert salary to number in case it's stored as string
+      const salary = Number(employee.salary) || 0;
+      return total + salary;
+    }, 0);
+  };
+
+  const getTotalEmployees = (employees) => {
+    return employees.length;
+  };
+
+  const calculatePaymentStatusTotals = (employees) => {
+    const statusTotals = {
+      paid: 0,
+      pending: 0,
+      onHold: 0,
+    };
+
+    employees.forEach((employee) => {
+      // Convert paymentStatus to string for comparison
+      switch (employee.paymentStatus.toString()) {
+        case "1":
+          statusTotals.paid++;
+          break;
+        case "2":
+          statusTotals.pending++;
+          break;
+        case "3":
+          statusTotals.onHold++;
+          break;
+        default:
+          break;
+      }
+    });
+
+    return statusTotals;
+  };
+  const getTop3EmployeesBySalary = (employees) => {
+    return employees
+      .map((employee) => ({
+        name: employee.name,
+        salary: parseFloat(employee.salary),
+        position: employee.position,
+      }))
+      .sort((a, b) => b.salary - a.salary)
+      .slice(0, 3);
+  };
+
+  const getTop3Positions = (employees) => {
+    // Count occurrences of each position
+    const positionCounts = employees.reduce((acc, employee) => {
+      acc[employee.position] = (acc[employee.position] || 0) + 1;
+      return acc;
+    }, {});
+
+    // Convert to array and sort by count
+    return Object.entries(positionCounts)
+      .map(([position, count]) => ({
+        position,
+        count,
+      }))
+      .sort((a, b) => b.count - a.count || a.position.localeCompare(b.position)) // Sort by count desc, then alphabetically
+      .slice(0, 3);
+  };
+
+  const getDashboardMetrics = (employeeData) => {
+    const totalSalary = calculateTotalSalary(employeeData);
+    const totalEmployees = getTotalEmployees(employeeData);
+    const paymentStatusTotals = calculatePaymentStatusTotals(employeeData);
+    const top3Salaries = getTop3EmployeesBySalary(employeeData);
+    const top3Positions = getTop3Positions(employeeData);
+
+    return {
+      totalSalary,
+      totalEmployees,
+      paymentStatusTotals,
+      top3Salaries,
+      top3Positions,
+    };
+  };
+
   return (
-    <>
+    <div className="bg-[#F4F6FA] h-full animate__animated animate__fadeIn">
       <Navbar />
+
       <main className="px-28 py-6">
-        <div class="">
+        <DashboardReports dashboardMetrics={dashboardMetrics} />
+        <div class="mt-4">
           <div class="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
             <div>
               <div class="relative ">
@@ -232,7 +332,7 @@ export default function Dashboard() {
             )}
           </div>
           <div className="relative overflow-x-auto">
-            <table class="border border-black dark:border-white rounded-md w-full text-sm text-left rtl:text-right text-black dark:text-white">
+            <table class="animate__animated animate__fadeIn border border-black dark:border-white rounded-md w-full text-sm text-left rtl:text-right text-black dark:text-white">
               <thead class="text-xs text-black dark:text-white uppercase bg-white dark:bg-gray-700 ">
                 <tr>
                   <th scope="col" class="px-6 py-3">
@@ -262,12 +362,15 @@ export default function Dashboard() {
                     Additional Payment
                   </th>
                   <th scope="col" class="px-6 py-3">
+                    Salary
+                  </th>
+                  <th scope="col" class="px-6 py-3">
                     Actions
                   </th>
                 </tr>
               </thead>
 
-              <tbody className="text-xs">
+              <tbody className="text-xs animate__animated animate__fadeIn">
                 {isLoading ? (
                   <tr>
                     <td colSpan="10" className="text-center py-4">
@@ -365,7 +468,7 @@ export default function Dashboard() {
                         </td>
                         <td className="px-6 py-4">
                           <div
-                            className={`status px-4 w-fit py-1 text-xs rounded-md ${
+                            className={`status px-4 w-fit py-1 text-xs rounded-md whitespace-nowrap ${
                               employee.paymentStatus == 1
                                 ? "text-white"
                                 : employee.paymentStatus == 2
@@ -387,6 +490,8 @@ export default function Dashboard() {
                         <td className="px-6 py-4">
                           {additionalPayments || "None"}
                         </td>
+                        <td className="px-6 py-4">{employee.salary}</td>
+
                         <td className="px-6 py-4">
                           <div className="flex">
                             <div
@@ -473,6 +578,6 @@ export default function Dashboard() {
           </div>
         </div>
       </main>
-    </>
+    </div>
   );
 }
