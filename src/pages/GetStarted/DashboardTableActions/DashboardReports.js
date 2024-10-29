@@ -3,6 +3,8 @@ import PaymentStatusChart from "./PaymentStatusChart";
 
 export default function DashboardReports({ dashboardMetrics }) {
   console.log("Dashboard Metrics: ", dashboardMetrics);
+  const top3Salaries = dashboardMetrics.top3Salaries || [];
+  const top3Positions = dashboardMetrics.top3Positions || [];
   return (
     <>
       <div className="flex justify-center gap-3">
@@ -33,7 +35,7 @@ export default function DashboardReports({ dashboardMetrics }) {
           >
             <h1 className="font-bold text-base ">Top Employees Salaries</h1>
             <div className="space-y-2">
-              {dashboardMetrics.top3Salaries.map((employee, index) => (
+              {top3Salaries.map((employee, index) => (
                 <div key={index} className="flex justify-between items-center">
                   <span className="font-medium">
                     {index + 1}. {employee.name}
@@ -48,7 +50,6 @@ export default function DashboardReports({ dashboardMetrics }) {
                 </div>
               ))}
             </div>
-            <h1 className="font-light text-sm">Employees</h1>
           </div>
           <div
             className="p-4 bg-white rounded-md border text-left"
@@ -56,7 +57,7 @@ export default function DashboardReports({ dashboardMetrics }) {
           >
             <h1 className="font-bold text-base ">Position/Job Title</h1>
             <div className="space-y-2">
-              {dashboardMetrics.top3Positions.map((positionData, index) => (
+              {top3Positions.map((positionData, index) => (
                 <div key={index} className="flex justify-between items-center">
                   <span className="font-medium">
                     {index + 1}. {positionData.position}
