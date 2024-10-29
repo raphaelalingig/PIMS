@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../../components/Navbar";
+import AddEmployee from "./DashboardTableActions/AddEmployee";
 
 export default function Dashboard() {
+  const [isAddEmployeeModalOpen, setIsAddEmployeeModalOpen] = useState(false);
+
   return (
     <>
       <Navbar />
-      <main className="px-36 py-6">
+      <main className="px-28 py-6">
         <div class="relative overflow-x-auto">
           <div class="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
             <div>
@@ -33,14 +36,12 @@ export default function Dashboard() {
                 />
               </div>
             </div>
-            <label for="table-search" class="sr-only">
-              Search
-            </label>
             <button
               id="dropdownRadioButton"
               data-dropdown-toggle="dropdownRadio"
-              class="gap-1 inline-flex items-center text-white bg-blue-700 hover:bg-blue-800 border border-black focus:outline-none  focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+              class="gap-1 inline-flex items-center text-white bg-blue-700 hover:bg-blue-800 border border-black focus:outline-none  focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-3 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
               type="button"
+              onClick={() => setIsAddEmployeeModalOpen(true)}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -56,11 +57,17 @@ export default function Dashboard() {
                   d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                 />
               </svg>
-              Add People
+              Add Employee
             </button>
+            {isAddEmployeeModalOpen && (
+              <AddEmployee
+                setIsAddEmployeeModalOpen={setIsAddEmployeeModalOpen}
+                isAddEmployeeModalOpen={isAddEmployeeModalOpen}
+              />
+            )}
           </div>
-          <table class="border border-black dark:border-white rounded-md w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead class="text-xs text-gray-700 uppercase bg-white dark:bg-gray-700 dark:text-gray-400">
+          <table class="border border-black dark:border-white rounded-md w-full text-sm text-left rtl:text-right text-black dark:text-white">
+            <thead class="text-xs text-black dark:text-white uppercase bg-white dark:bg-gray-700 ">
               <tr>
                 <th scope="col" class="p-4">
                   <div class="flex items-center">
@@ -75,23 +82,40 @@ export default function Dashboard() {
                   </div>
                 </th>
                 <th scope="col" class="px-6 py-3">
-                  Name
+                  ID
                 </th>
                 <th scope="col" class="px-6 py-3">
-                  Color
+                  Employee Name
                 </th>
                 <th scope="col" class="px-6 py-3">
-                  Category
+                  Position/Job Title
                 </th>
                 <th scope="col" class="px-6 py-3">
-                  Price
+                  Mobile Number
+                </th>
+
+                <th scope="col" class="px-6 py-3">
+                  Night Differential
                 </th>
                 <th scope="col" class="px-6 py-3">
-                  Action
+                  Deductions
+                </th>
+                <th scope="col" class="px-6 py-3">
+                  Start Date
+                </th>
+
+                <th scope="col" class="px-6 py-3">
+                  Salary
+                </th>
+                <th scope="col" class="px-6 py-3">
+                  Payment Status
+                </th>
+                <th scope="col" class="px-6 py-3">
+                  Actions
                 </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="text-xs">
               <tr class="odd:bg-gray-100 odd:dark:bg-gray-900 even:bg-white even:dark:bg-gray-800 bg-white border-b dark:bg-gray-800 dark:border-gray-700 ">
                 <td class="w-4 p-4">
                   <div class="flex items-center">
@@ -105,12 +129,7 @@ export default function Dashboard() {
                     </label>
                   </div>
                 </td>
-                <th
-                  scope="row"
-                  class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                >
-                  Apple MacBook Pro 17"
-                </th>
+                <td class="px-6 py-4">Silver</td>
                 <td class="px-6 py-4">Silver</td>
                 <td class="px-6 py-4">Laptop</td>
                 <td class="px-6 py-4">$2999</td>
