@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -9,9 +9,9 @@ export default function AddEmployee({
   const [name, setName] = useState("");
   const [postition, setPosition] = useState("");
   const [mobileNumber, setMobileNumber] = useState(0);
-  const [basicSalary, setBasicSalary] = useState(0);
+  const [basicPay, setBasicPay] = useState(0);
+  const [salaryType, setSalaryType] = useState(0);
 
-  const [startDate, setStartDate] = useState(new Date());
   const [salary, setSalary] = useState(0);
   const [paymentStatus, setPaymentStatus] = useState("0");
   const [isNighDifferential, setIsNighDifferential] = useState(false);
@@ -21,16 +21,108 @@ export default function AddEmployee({
   const [overtimeRate, setOvertimeRate] = useState(0);
   const [nightDifferentialHours, setNightDifferentialHours] = useState(0);
   const [nightDifferentialRate, setNightDifferentialRate] = useState(0);
-  const [deductionsHours, setDeductionsHours] = useState(0);
-  const [deductionsRate, setDeductionsRate] = useState(0);
+  const [deductionsReasons, setDeductionsReasons] = useState("0");
+  const [deductionsAmount, setDeductionsAmount] = useState(0);
+  const [salaryTypeRate, setSalaryTypeRate] = useState(0);
+  const [salaryTypeHours, setSalaryTypeHours] = useState(0);
+  const [salaryDate, setSalaryDate] = useState(new Date());
+
+  useEffect(() => {
+    let newDate = new Date();
+
+    if (salaryType === 1) {
+      newDate.setHours(newDate.getHours() + 8);
+    } else if (salaryType === 2) {
+      newDate.setDate(newDate.getDate() + 15);
+    } else if (salaryType === 3) {
+      newDate.setDate(newDate.getDate() + 30);
+    }
+
+    setSalaryDate(newDate);
+  }, [salaryType]);
+
+  const calculateSalary = ({
+    basicPay,
+    salaryType,
+    isOvertime,
+    overtimeHours,
+    isNighDifferential,
+    nightDifferentialHours,
+    isDeductions,
+    deductionsAmount,
+  }) => {
+    // Initialize base salary based on salary type
+    let totalSalary = 0;
+    const hourlyRate = basicPay / 8; // Daily rate divided by 8 hours
+
+    // Calculate base salary based on salary type
+    switch (salaryType) {
+      case 1: // Daily
+        totalSalary = basicPay;
+        break;
+      case 2: // Every 15 Days
+        totalSalary = basicPay * 15;
+        break;
+      case 3: // Monthly
+        totalSalary = basicPay * 30;
+        break;
+      default:
+        totalSalary = 0;
+    }
+
+    // Calculate overtime if enabled
+    if (isOvertime && overtimeHours > 0) {
+      const overtimePay = hourlyRate * 1.5 * overtimeHours;
+      totalSalary += overtimePay;
+    }
+
+    // Calculate night differential if enabled
+    if (isNighDifferential && nightDifferentialHours > 0) {
+      // Night differential is 110% of hourly rate
+      const nightDiffRate = hourlyRate * 1.1;
+      const nightDiffPay = nightDiffRate * nightDifferentialHours;
+      totalSalary += nightDiffPay;
+    }
+
+    // Apply deductions if enabled
+    if (isDeductions && deductionsAmount > 0) {
+      totalSalary -= deductionsAmount;
+    }
+
+    return totalSalary;
+  };
+
+  useEffect(() => {
+    const newSalary = calculateSalary({
+      basicPay: Number(basicPay),
+      salaryType,
+      isOvertime,
+      overtimeHours: Number(overtimeHours),
+      isNighDifferential,
+      nightDifferentialHours: Number(nightDifferentialHours),
+      isDeductions,
+      deductionsAmount: Number(deductionsAmount),
+    });
+
+    setSalary(newSalary);
+  }, [
+    basicPay,
+    salaryType,
+    isOvertime,
+    overtimeHours,
+    isNighDifferential,
+    nightDifferentialHours,
+    isDeductions,
+    deductionsAmount,
+  ]);
 
   const handleAddEmployee = (e) => {
     e.preventDefault();
     console.log("Name: ", name);
     console.log("Position: ", postition);
     console.log("Mobile Number: ", mobileNumber);
-    console.log("Basic Salary: ", basicSalary);
-    console.log("Start Date: ", startDate);
+    console.log("Basic Pay: ", basicPay);
+    console.log("Salary Type ", salaryType);
     console.log("Salary: ", salary);
     console.log("Payment Status: ", paymentStatus);
     console.log(
@@ -48,9 +140,10 @@ export default function AddEmployee({
     console.log(
       "Deductions + hours + rate ",
       isDeductions,
-      deductionsHours,
-      deductionsRate
+      deductionsReasons,
+      deductionsAmount
     );
+    console.log("Salary Type + hours + rate ", salaryTypeHours, salaryTypeRate);
 
     setIsAddEmployeeModalOpen(false);
   };
@@ -118,7 +211,7 @@ export default function AddEmployee({
                 <div>
                   {/* class="col-span-2" */}
                   <label
-                    for="name"
+                    for="Position"
                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >
                     Position/Job Title
@@ -126,7 +219,7 @@ export default function AddEmployee({
                   <input
                     type="text"
                     name="Position"
-                    id="name"
+                    id="Position"
                     onChange={(e) => setPosition(e.target.value)}
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                     placeholder=""
@@ -152,58 +245,41 @@ export default function AddEmployee({
                 </div>
                 <div class="">
                   <label
-                    for="Basic Salary"
+                    for="basicPay"
                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >
-                    Basic Salary
+                    Basic Pay
                   </label>
                   <input
                     type="number"
-                    name="Mobile Number"
-                    id="Basic Salary"
-                    onChange={(e) => setBasicSalary(e.target.value)}
+                    name="basicPay"
+                    id="basicPay"
+                    onChange={(e) => setBasicPay(e.target.value)}
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                    placeholder="Basic salary per day"
                     required=""
-                  />
-                </div>
-                <div className="">
-                  <label
-                    htmlFor="startDate"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Start Date
-                  </label>
-                  <DatePicker
-                    selected={startDate}
-                    onChange={(date) => setStartDate(date)}
-                    customInput={
-                      <input
-                        type="text"
-                        name="startDate"
-                        id="startDate"
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full py-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                        required
-                      />
-                    }
+                    placeholder="Basic salary per day"
                   />
                 </div>
                 <div class="">
                   <label
-                    for="Salary"
+                    for="salaryType"
                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >
-                    Salary
+                    Salary Type
                   </label>
-                  <input
-                    disabled
-                    type="number"
-                    name="Mobile Number"
-                    id="Salary"
-                    onChange={(e) => setSalary(e.target.value)}
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  />
+                  <select
+                    id="salaryType"
+                    name="salaryType"
+                    onChange={(e) => setSalaryType(Number(e.target.value))}
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                  >
+                    <option selected={0}>Select salary type</option>
+                    <option value={1}>Daily</option>
+                    <option value={2}>Every 15 Days</option>
+                    <option value={3}>Monthly</option>
+                  </select>
                 </div>
+
                 <div class="">
                   <label
                     for="Payment Status"
@@ -222,6 +298,31 @@ export default function AddEmployee({
                     <option value="3">On Hold</option>
                   </select>
                 </div>
+
+                <div className="">
+                  <label
+                    htmlFor="salaryDate"
+                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Salary Date
+                  </label>
+                  <DatePicker
+                    selected={salaryDate}
+                    onChange={(date) => setSalaryDate(date)}
+                    showTimeSelect
+                    dateFormat="Pp"
+                    customInput={
+                      <input
+                        type="text"
+                        name="salaryDate"
+                        id="salaryDate"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full py-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                        required
+                      />
+                    }
+                  />
+                </div>
+
                 {/* <div class="col-span-2">
                   <label
                     for="description"
@@ -310,7 +411,7 @@ export default function AddEmployee({
                           Number of Hours
                         </label>
                         <input
-                          type="text"
+                          type="number"
                           name="overtimeNumberofHours"
                           id="overtimeNumberofHours"
                           onChange={(e) => setOvertimeHours(e.target.value)}
@@ -323,12 +424,13 @@ export default function AddEmployee({
                           for="overtimeRate"
                           class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                         >
-                          Rate (%)
+                          Hourly Rate
                         </label>
                         <input
-                          type="text"
+                          type="number"
                           name="overtimeRate"
                           id="overtimeRate"
+                          value={overtimeRate}
                           onChange={(e) => setOvertimeRate(e.target.value)}
                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                         />
@@ -355,7 +457,7 @@ export default function AddEmployee({
                           Number of Hours
                         </label>
                         <input
-                          type="text"
+                          type="number"
                           name="nightDifferentialNumberofHours"
                           id="nightDifferentialNumberofHours"
                           onChange={(e) =>
@@ -370,7 +472,7 @@ export default function AddEmployee({
                           for="differentialrate"
                           class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                         >
-                          Rate (%)
+                          Hourly Rate
                         </label>
                         <input
                           type="text"
@@ -398,16 +500,16 @@ export default function AddEmployee({
                       <div>
                         {/* class="col-span-2" */}
                         <label
-                          for="deductionsNumberofHours"
+                          for="setDeductionsReasons"
                           class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                         >
-                          Number of Hours
+                          Reasons
                         </label>
                         <input
                           type="text"
-                          name="deductionsNumberofHours"
-                          id="deductionsNumberofHours"
-                          onChange={(e) => setDeductionsHours(e.target.value)}
+                          name="setDeductionsReasons"
+                          id="setDeductionsReasons"
+                          onChange={(e) => setDeductionsReasons(e.target.value)}
                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                         />
                       </div>
@@ -417,19 +519,39 @@ export default function AddEmployee({
                           for="deductionRate"
                           class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                         >
-                          Rate (%)
+                          Total Amount
                         </label>
                         <input
                           type="text"
                           name="deductionRate"
                           id="deductionRate"
-                          onChange={(e) => setDeductionsRate(e.target.value)}
+                          onChange={(e) => setDeductionsAmount(e.target.value)}
                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                         />
                       </div>
                     </div>
                   </div>
                 )}
+              </div>
+              <div className="grid gap-4 mb-4 sm:grid-cols-3 border-b pb-4">
+                {" "}
+                <div class="">
+                  <label
+                    for="Salary"
+                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Salary
+                  </label>
+                  <input
+                    disabled
+                    type="number"
+                    name="salary"
+                    id="Salary"
+                    value={salary}
+                    onChange={(e) => setSalary(e.target.value)}
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                  />
+                </div>
               </div>
 
               <div className="flex justify-end mt-4 gap-2">

@@ -154,13 +154,19 @@ export default function Login() {
                   </div>
                 )}
 
-                {/* <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center">
-                      <label className="font-medium text-md cursor-pointer text-red-500 hover:text-red-600">
-                        Forgot Password
-                      </label>
-                  </div>
-                </div> */}
+                <label
+                  for="remember"
+                  class="ms-2 text-sm font-medium text-gray-900 "
+                >
+                  Dont't have an account?{" "}
+                  <Link
+                    to={"/register"}
+                    class="text-blue-600 hover:underline dark:text-blue-500"
+                  >
+                    Register here
+                  </Link>
+                  .
+                </label>
 
                 {/* Login Button */}
                 <button
