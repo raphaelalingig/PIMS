@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Swal from "sweetalert2";
 
 export default function AddEmployee({
   setIsAddEmployeeModalOpen,
   isAddEmployeeModalOpen,
+  fetchData,
 }) {
   const [name, setName] = useState("");
-  const [postition, setPosition] = useState("");
+  const [position, setPosition] = useState("");
   const [mobileNumber, setMobileNumber] = useState(0);
   const [basicPay, setBasicPay] = useState(0);
   const [salaryType, setSalaryType] = useState(0);
@@ -18,13 +20,10 @@ export default function AddEmployee({
   const [isOvertime, setIsOvertime] = useState(false);
   const [isDeductions, setIsDeductions] = useState(false);
   const [overtimeHours, setOvertimeHours] = useState(0);
-  const [overtimeRate, setOvertimeRate] = useState(0);
   const [nightDifferentialHours, setNightDifferentialHours] = useState(0);
-  const [nightDifferentialRate, setNightDifferentialRate] = useState(0);
   const [deductionsReasons, setDeductionsReasons] = useState("0");
   const [deductionsAmount, setDeductionsAmount] = useState(0);
-  const [salaryTypeRate, setSalaryTypeRate] = useState(0);
-  const [salaryTypeHours, setSalaryTypeHours] = useState(0);
+
   const [salaryDate, setSalaryDate] = useState(new Date());
 
   useEffect(() => {
@@ -118,8 +117,75 @@ export default function AddEmployee({
 
   const handleAddEmployee = (e) => {
     e.preventDefault();
+
+    Swal.fire({
+      title: "Do you want to add this employee?",
+      text: "",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#1A56DB",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Confirm",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const formatDate = (date) => {
+          return new Intl.DateTimeFormat("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+          }).format(new Date(date));
+        };
+        const newEmployee = {
+          id: Date.now(), // Add a unique ID for each employee
+          name,
+          position,
+          mobileNumber,
+          basicPay,
+          salaryType,
+          salary,
+          salaryDate: formatDate(salaryDate),
+          paymentStatus,
+          nightDifferential: {
+            enabled: isNighDifferential,
+            hours: nightDifferentialHours,
+          },
+          overtime: {
+            enabled: isOvertime,
+            hours: overtimeHours,
+          },
+          deductions: {
+            enabled: isDeductions,
+            reasons: deductionsReasons,
+            amount: deductionsAmount,
+          },
+        };
+
+        // Get existing employees from sessionStorage
+        const existingEmployees =
+          JSON.parse(sessionStorage.getItem("employeeData")) || [];
+
+        // Add new employee to the array
+        const updatedEmployees = [...existingEmployees, newEmployee];
+
+        // Store updated array back in sessionStorage
+        sessionStorage.setItem(
+          "employeeData",
+          JSON.stringify(updatedEmployees)
+        );
+        fetchData();
+        setIsAddEmployeeModalOpen(false);
+        console.log("Stored employee data:", updatedEmployees);
+      }
+    });
+
+    // Create the new employee object
+
+    // Optional: Keep the console.logs for debugging
     console.log("Name: ", name);
-    console.log("Position: ", postition);
+    console.log("Position: ", position);
     console.log("Mobile Number: ", mobileNumber);
     console.log("Basic Pay: ", basicPay);
     console.log("Salary Type ", salaryType);
@@ -128,25 +194,26 @@ export default function AddEmployee({
     console.log(
       "Night Differential + hours + rate ",
       isNighDifferential,
-      nightDifferentialHours,
-      nightDifferentialRate
+      nightDifferentialHours
     );
+    console.log("Overtime + hours + rate ", isOvertime, overtimeHours);
     console.log(
-      "Overtime + hours + rate ",
-      isOvertime,
-      overtimeHours,
-      overtimeRate
-    );
-    console.log(
-      "Deductions + hours + rate ",
+      "Deductions + Reasons + Amount ",
       isDeductions,
       deductionsReasons,
       deductionsAmount
     );
-    console.log("Salary Type + hours + rate ", salaryTypeHours, salaryTypeRate);
-
-    setIsAddEmployeeModalOpen(false);
   };
+
+  // To retrieve all employees later:
+  // const allEmployees = JSON.parse(sessionStorage.getItem('employeeData')) || [];
+
+  // To remove an employee (if needed):
+  // const removeEmployee = (employeeId) => {
+  //     const existingEmployees = JSON.parse(sessionStorage.getItem('employeeData')) || [];
+  //     const updatedEmployees = existingEmployees.filter(emp => emp.id !== employeeId);
+  //     sessionStorage.setItem('employeeData', JSON.stringify(updatedEmployees));
+  // };
   return (
     <>
       <div
@@ -399,7 +466,8 @@ export default function AddEmployee({
                       for="overtime"
                       class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                     >
-                      Overtime
+                      Overtime{" "}
+                      <span className="text-xs">(1.5× hourly rate)</span>
                     </label>
                     <div className="flex gap-4">
                       <div>
@@ -418,23 +486,6 @@ export default function AddEmployee({
                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                         />
                       </div>
-                      <div>
-                        {/* class="col-span-2" */}
-                        <label
-                          for="overtimeRate"
-                          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                        >
-                          Hourly Rate
-                        </label>
-                        <input
-                          type="number"
-                          name="overtimeRate"
-                          id="overtimeRate"
-                          value={overtimeRate}
-                          onChange={(e) => setOvertimeRate(e.target.value)}
-                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                        />
-                      </div>
                     </div>
                   </div>
                 )}
@@ -444,7 +495,10 @@ export default function AddEmployee({
                       for="differentialrate"
                       class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                     >
-                      Night Differential
+                      Night Differential{" "}
+                      <span className="text-xs">
+                        (10% additional compensation)
+                      </span>
                     </label>
                     <div className="flex gap-4">
                       {" "}
@@ -462,24 +516,6 @@ export default function AddEmployee({
                           id="nightDifferentialNumberofHours"
                           onChange={(e) =>
                             setNightDifferentialHours(e.target.value)
-                          }
-                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                        />
-                      </div>
-                      <div>
-                        {/* class="col-span-2" */}
-                        <label
-                          for="differentialrate"
-                          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                        >
-                          Hourly Rate
-                        </label>
-                        <input
-                          type="text"
-                          name="differentialrate"
-                          id="differentialrate"
-                          onChange={(e) =>
-                            setNightDifferentialRate(e.target.value)
                           }
                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                         />
