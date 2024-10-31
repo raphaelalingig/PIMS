@@ -61,7 +61,7 @@ const PaymentStatusChart = ({ paymentStatusTotals }) => {
   }, [paymentStatusTotals]); // Recreate chart when data changes
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow h-72">
+    <div className="bg-white dark:bg-gray-700 border dark:border-white p-4 rounded-lg shadow h-72">
       <canvas ref={chartRef} />
     </div>
   );

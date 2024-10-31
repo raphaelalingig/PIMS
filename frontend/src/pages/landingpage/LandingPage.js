@@ -9,8 +9,10 @@ export default function LandingPage() {
       <div>
         <Navbar />
       </div>
-      <LandingPage_section1 />
-      <Footer />
+      <div className="animate__animated animate__fadeIn">
+        <LandingPage_section1 />
+        <Footer />
+      </div>
     </div>
   );
 }

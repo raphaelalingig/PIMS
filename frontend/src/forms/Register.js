@@ -3,22 +3,22 @@ import Navbar from "../components/Navbar";
 
 export default function Register() {
   return (
-    <>
+    <div className="bg-white dark:bg-gray-800 min-h-screen">
       <Navbar />
-      <div className="max-w-screen-xl px-4 py-4 mx-auto sm:px-6 lg:px-8">
+      <div className="animate__animated animate__fadeIn max-w-screen-xl px-4 py-4 mx-auto sm:px-6 lg:px-8 ">
         <form>
           <div class="grid gap-6 mb-6 md:grid-cols-3">
             <div>
               <label
                 for="first_name"
-                class="block mb-2 text-sm font-medium text-gray-900 "
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
                 First name
               </label>
               <input
                 type="text"
                 id="first_name"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="John"
                 required
               />
@@ -26,14 +26,14 @@ export default function Register() {
             <div>
               <label
                 for="last_name"
-                class="block mb-2 text-sm font-medium text-gray-900 "
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
                 Last name
               </label>
               <input
                 type="text"
                 id="last_name"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Doe"
                 required
               />
@@ -42,14 +42,14 @@ export default function Register() {
             <div>
               <label
                 for="phone"
-                class="block mb-2 text-sm font-medium text-gray-900 "
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
                 Phone number
               </label>
               <input
                 type="tel"
                 id="phone"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="123-45-678"
                 pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
                 required
@@ -59,14 +59,14 @@ export default function Register() {
           <div class="mb-6">
             <label
               for="email"
-              class="block mb-2 text-sm font-medium text-gray-900 "
+              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
             >
               Email address
             </label>
             <input
               type="email"
               id="email"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="john.doe@company.com"
               required
             />
@@ -74,14 +74,14 @@ export default function Register() {
           <div class="mb-6">
             <label
               for="password"
-              class="block mb-2 text-sm font-medium text-gray-900 "
+              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
             >
               Password
             </label>
             <input
               type="password"
               id="password"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="•••••••••"
               required
             />
@@ -89,14 +89,14 @@ export default function Register() {
           <div class="mb-6">
             <label
               for="confirm_password"
-              class="block mb-2 text-sm font-medium text-gray-900 "
+              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
             >
               Confirm password
             </label>
             <input
               type="password"
               id="confirm_password"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="•••••••••"
               required
             />
@@ -107,13 +107,13 @@ export default function Register() {
                 id="remember"
                 type="checkbox"
                 value=""
-                class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800"
+                class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 "
                 required
               />
             </div>
             <label
               for="remember"
-              class="ms-2 text-sm font-medium text-gray-900 "
+              class="ms-2 text-sm font-medium text-gray-900 dark:text-white"
             >
               I agree with the{" "}
               <a
@@ -133,6 +133,6 @@ export default function Register() {
           </button>
         </form>
       </div>
-    </>
+    </div>
   );
 }

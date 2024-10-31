@@ -242,7 +242,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="bg-[#F4F6FA] h-full animate__animated animate__fadeIn">
+    <div className="bg-[#F4F6FA] dark:bg-gray-900 min-h-screen animate__animated animate__fadeIn">
       <Navbar />
 
       <main className="px-28 py-6">
@@ -335,36 +335,36 @@ export default function Dashboard() {
             <table class="animate__animated animate__fadeIn border border-black dark:border-white rounded-md w-full text-sm text-left rtl:text-right text-black dark:text-white">
               <thead class="text-xs text-black dark:text-white uppercase bg-white dark:bg-gray-700 ">
                 <tr>
-                  <th scope="col" class="px-6 py-3">
+                  <th scope="col" class="px-6 py-3 border border-black dark:border-white">
                     ID
                   </th>
-                  <th scope="col" class="px-6 py-3">
+                  <th scope="col" class="px-6 py-3 border border-black dark:border-white">
                     Employee Name
                   </th>
-                  <th scope="col" class="px-6 py-3">
+                  <th scope="col" class="px-6 py-3 border border-black dark:border-white">
                     Position/Job Title
                   </th>
-                  <th scope="col" class="px-6 py-3">
+                  <th scope="col" class="px-6 py-3 border border-black dark:border-white">
                     Mobile Number
                   </th>
 
-                  <th scope="col" class="px-6 py-3">
+                  <th scope="col" class="px-6 py-3 border border-black dark:border-white">
                     Basic Pay
                   </th>
 
-                  <th scope="col" class="px-6 py-3">
+                  <th scope="col" class="px-6 py-3 border border-black dark:border-white">
                     Salary Date
                   </th>
-                  <th scope="col" class="px-6 py-3">
+                  <th scope="col" class="px-6 py-3 border border-black dark:border-white">
                     Payment Status
                   </th>
-                  <th scope="col" class="px-6 py-3">
+                  <th scope="col" class="px-6 py-3 border border-black dark:border-white">
                     Additional Payment
                   </th>
-                  <th scope="col" class="px-6 py-3">
+                  <th scope="col" class="px-6 py-3 border border-black dark:border-white">
                     Salary
                   </th>
-                  <th scope="col" class="px-6 py-3">
+                  <th scope="col" class="px-6 py-3 border border-black dark:border-white">
                     Actions
                   </th>
                 </tr>
@@ -454,19 +454,19 @@ export default function Dashboard() {
                     return (
                       <tr
                         key={employee.id}
-                        className="odd:bg-gray-100 odd:dark:bg-gray-900 even:bg-white even:dark:bg-gray-800 bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                        className="odd:bg-gray-100 odd:dark:bg-gray-900 even:bg-white even:dark:bg-gray-800 bg-white border-b border-black dark:border-white dark:bg-gray-800"
                       >
-                        <td className="px-6 py-4">{employee.id}</td>
-                        <td className="px-6 py-4">{employee.name}</td>
-                        <td className="px-6 py-4">{employee.position}</td>
-                        <td className="px-6 py-4">{employee.mobileNumber}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          ₱: {employee.basicPay}
+                        <td className="px-6 py-4 border-r border-black dark:border-white border-r border-black dark:border-white">{employee.id}</td>
+                        <td className="px-6 py-4 border-r border-black dark:border-white">{employee.name}</td>
+                        <td className="px-6 py-4 border-r border-black dark:border-white">{employee.position}</td>
+                        <td className="px-6 py-4 border-r border-black dark:border-white">{employee.mobileNumber}</td>
+                        <td className="px-6 py-4 border-r border-black dark:border-white whitespace-nowrap">
+                          ₱ {employee.basicPay}
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-4 border-r border-black dark:border-white">
                           {formatDate(employee.salaryDate)}
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-4 border-r border-black dark:border-white">
                           <div
                             className={`status px-4 w-fit py-1 text-xs rounded-md whitespace-nowrap ${
                               employee.paymentStatus == 1
@@ -487,12 +487,12 @@ export default function Dashboard() {
                             {paymentStatus[employee.paymentStatus]}
                           </div>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-4 border-r border-black dark:border-white">
                           {additionalPayments || "None"}
                         </td>
-                        <td className="px-6 py-4">{employee.salary}</td>
+                        <td className="px-6 py-4 border-r border-black dark:border-white">{employee.salary}</td>
 
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-4 border-r border-black dark:border-white">
                           <div className="flex">
                             <div
                               className="editIcon mr-2"
