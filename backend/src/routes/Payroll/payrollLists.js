@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import db from '../config/db.js';  // Adjust this import as per your db config
+import db from '../../config/db.js';  // Adjust this import as per your db config
 
 // Create a payroll list
 router.post('/', async (req, res) => {

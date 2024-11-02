@@ -1,6 +1,6 @@
 import { Router } from 'express';
 const router = Router();
-import db from '../config/db.js';  // Adjust this import as per your db config
+import db from '../../config/db.js';  // Adjust this import as per your db config
 
 
 // Create a job position
