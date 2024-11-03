@@ -30,7 +30,6 @@ export default function Login() {
   
       // Check if login is successful
       if (response.status === 200 && response.data.status === "success") {
-        localStorage.setItem("token", response.data.token);
         navigate("/dashboard");  // Navigate to the dashboard
       } else {
         console.error("Login failed:", response.data.message);
