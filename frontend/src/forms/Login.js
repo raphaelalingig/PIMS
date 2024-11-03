@@ -1,14 +1,47 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo_withBackgroundRemover.png";
-
+import axios from "axios";
+import api_url from "../components/api_url";
 export default function Login() {
+ const navigate = useNavigate();
+
   const [visiblePass, setVisiblePass] = useState(false);
   const [showSpinner, setShowSpinner] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const toggleVisiblePass = () => {
     setVisiblePass(!visiblePass);
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setShowSpinner(true);
+  
+    // Initialize navigate hook
+  
+    try {
+      const response = await api_url.post("/user/login", {
+        email,
+        password
+      });
+  
+      // Check if login is successful
+      if (response.status === 200 && response.data.status === "success") {
+        localStorage.setItem("token", response.data.token);
+        navigate("/dashboard");  // Navigate to the dashboard
+      } else {
+        console.error("Login failed:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+    } finally {
+      setTimeout(() => {
+        setShowSpinner(false);
+      }, 2000);
+    }
   };
   return (
     <>
@@ -32,7 +65,7 @@ export default function Login() {
               <p className="text-center text-sm text-gray-600 mb-6">
                 Fill the credentials below to log into Sustainable Sprinkler
               </p>
-              <form className="space-y-6">
+              <form onSubmit={handleLogin} className="space-y-6">
                 {/* Email Address Input */}
 
                 <div className="flex mb-6">
@@ -56,6 +89,8 @@ export default function Login() {
                     type="text"
                     id="email"
                     placeholder="Email Address"
+                    onChange={(e) => setEmail(e.target.value)}
+                    value={email}
                     className="rounded-none rounded-e-lg bg-gray-200 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5 "
                     autoComplete="email"
                   />
@@ -85,6 +120,8 @@ export default function Login() {
                       type={visiblePass ? "text" : "password"}
                       id="password"
                       placeholder="Password"
+                      onChange={(e) => setPassword(e.target.value)}
+                      value={password}
                       className="rounded-none rounded-e-lg bg-gray-200 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block w-full text-sm border-gray-300 p-2.5"
                       autoComplete="current-password"
                     />
