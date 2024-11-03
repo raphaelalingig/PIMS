@@ -8,11 +8,11 @@ router.post("/", async (req, res) => {
 
   // Validation: Check for missing fields
   const requiredFields = [
-    { name: "first_name", value: first_name },
-    { name: "last_name", value: last_name },
-    { name: "mobile_number", value: mobile_number },
-    { name: "email", value: email },
-    { name: "password", value: password },
+    { name: "First_name", value: first_name },
+    { name: "Last_name", value: last_name },
+    { name: "Mobile_number", value: mobile_number },
+    { name: "Email", value: email },
+    { name: "Password", value: password },
   ];
 
   for (const field of requiredFields) {

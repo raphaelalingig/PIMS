@@ -2,6 +2,7 @@ import express from "express";
 import pkg from "body-parser";
 import { config } from "dotenv";
 import registerUserRouter from "./routes/Users/registerUser.js";
+import loginUserRouter from "./routes/Users/loginUser.js";
 import payrollListsRouter from "./routes/Payroll/payrollLists.js";
 import jobPositionsRouter from "./routes/JobPosition/jobPositions.js";
 import payrollEntriesRouter from "./routes/Payroll/payrollEntries.js";
@@ -24,10 +25,19 @@ app.use(json());
     console.log("Database initialized successfully.");
 
     // Routes
+    // Users
     app.use("/api/user/register", registerUserRouter);
+    app.use("/api/user/login", loginUserRouter);
+
+    // Payroll
     app.use("/api/payroll-lists", payrollListsRouter);
+
+    // Job Positions
     app.use("/api/job-positions", jobPositionsRouter);
+
+    // Payroll Entries
     app.use("/api/payroll-entries", payrollEntriesRouter);
+
 
     // Base Route
     app.get("/", (req, res) => {
