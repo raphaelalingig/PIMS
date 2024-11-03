@@ -1,16 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo_withBackgroundRemover.png";
-import axios from "axios";
-import api_url from "../components/api_url";
+import { useAuth } from "../context/AuthContext";
 export default function Login() {
- const navigate = useNavigate();
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [visiblePass, setVisiblePass] = useState(false);
   const [showSpinner, setShowSpinner] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
+    console.log("Updated isAuthenticated:", isAuthenticated);
+    // Optionally, set it in a state variable if your component depends on this.
+  }, []);
 
   const toggleVisiblePass = () => {
     setVisiblePass(!visiblePass);
@@ -19,28 +24,8 @@ export default function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     setShowSpinner(true);
-  
-    // Initialize navigate hook
-  
-    try {
-      const response = await api_url.post("/user/login", {
-        email,
-        password
-      });
-  
-      // Check if login is successful
-      if (response.status === 200 && response.data.status === "success") {
-        navigate("/dashboard");  // Navigate to the dashboard
-      } else {
-        console.error("Login failed:", response.data.message);
-      }
-    } catch (error) {
-      console.error("Error during login:", error);
-    } finally {
-      setTimeout(() => {
-        setShowSpinner(false);
-      }, 2000);
-    }
+    await login(email, password, navigate); // Call login function
+    setShowSpinner(false);
   };
   return (
     <>
@@ -92,6 +77,7 @@ export default function Login() {
                     value={email}
                     className="rounded-none rounded-e-lg bg-gray-200 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5 "
                     autoComplete="email"
+                    required
                   />
                 </div>
 
@@ -123,6 +109,7 @@ export default function Login() {
                       value={password}
                       className="rounded-none rounded-e-lg bg-gray-200 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block w-full text-sm border-gray-300 p-2.5"
                       autoComplete="current-password"
+                      required
                     />
                     <div
                       className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"

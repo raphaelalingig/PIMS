@@ -42,6 +42,21 @@ export default function Dashboard() {
   });
 
   useEffect(() => {
+    const userCredentialsString = localStorage.getItem("userCredentials");
+
+    if (userCredentialsString) {
+      try {
+        const userCredentials = userCredentialsString;
+        console.log(userCredentials);
+      } catch (error) {
+        console.error("Could not parse userCredentials:", error);
+      }
+    } else {
+      console.log("No userCredentials found in localStorage.");
+    }
+  }, []);
+
+  useEffect(() => {
     const metrics = getDashboardMetrics(employeeData);
     setDashboardMetrics(metrics);
   }, [employeeData]);
@@ -335,36 +350,66 @@ export default function Dashboard() {
             <table class="animate__animated animate__fadeIn border border-black dark:border-white rounded-md w-full text-sm text-left rtl:text-right text-black dark:text-white">
               <thead class="text-xs text-black dark:text-white uppercase bg-white dark:bg-gray-700 ">
                 <tr>
-                  <th scope="col" class="px-6 py-3 border border-black dark:border-white">
+                  <th
+                    scope="col"
+                    class="px-6 py-3 border border-black dark:border-white"
+                  >
                     ID
                   </th>
-                  <th scope="col" class="px-6 py-3 border border-black dark:border-white">
+                  <th
+                    scope="col"
+                    class="px-6 py-3 border border-black dark:border-white"
+                  >
                     Employee Name
                   </th>
-                  <th scope="col" class="px-6 py-3 border border-black dark:border-white">
+                  <th
+                    scope="col"
+                    class="px-6 py-3 border border-black dark:border-white"
+                  >
                     Position/Job Title
                   </th>
-                  <th scope="col" class="px-6 py-3 border border-black dark:border-white">
+                  <th
+                    scope="col"
+                    class="px-6 py-3 border border-black dark:border-white"
+                  >
                     Mobile Number
                   </th>
 
-                  <th scope="col" class="px-6 py-3 border border-black dark:border-white">
+                  <th
+                    scope="col"
+                    class="px-6 py-3 border border-black dark:border-white"
+                  >
                     Basic Pay
                   </th>
 
-                  <th scope="col" class="px-6 py-3 border border-black dark:border-white">
+                  <th
+                    scope="col"
+                    class="px-6 py-3 border border-black dark:border-white"
+                  >
                     Salary Date
                   </th>
-                  <th scope="col" class="px-6 py-3 border border-black dark:border-white">
+                  <th
+                    scope="col"
+                    class="px-6 py-3 border border-black dark:border-white"
+                  >
                     Payment Status
                   </th>
-                  <th scope="col" class="px-6 py-3 border border-black dark:border-white">
+                  <th
+                    scope="col"
+                    class="px-6 py-3 border border-black dark:border-white"
+                  >
                     Additional Payment
                   </th>
-                  <th scope="col" class="px-6 py-3 border border-black dark:border-white">
+                  <th
+                    scope="col"
+                    class="px-6 py-3 border border-black dark:border-white"
+                  >
                     Salary
                   </th>
-                  <th scope="col" class="px-6 py-3 border border-black dark:border-white">
+                  <th
+                    scope="col"
+                    class="px-6 py-3 border border-black dark:border-white"
+                  >
                     Actions
                   </th>
                 </tr>
@@ -456,10 +501,18 @@ export default function Dashboard() {
                         key={employee.id}
                         className="odd:bg-gray-100 odd:dark:bg-gray-900 even:bg-white even:dark:bg-gray-800 bg-white border-b border-black dark:border-white dark:bg-gray-800"
                       >
-                        <td className="px-6 py-4 border-r border-black dark:border-white border-r border-black dark:border-white">{employee.id}</td>
-                        <td className="px-6 py-4 border-r border-black dark:border-white">{employee.name}</td>
-                        <td className="px-6 py-4 border-r border-black dark:border-white">{employee.position}</td>
-                        <td className="px-6 py-4 border-r border-black dark:border-white">{employee.mobileNumber}</td>
+                        <td className="px-6 py-4 border-r border-black dark:border-white border-r border-black dark:border-white">
+                          {employee.id}
+                        </td>
+                        <td className="px-6 py-4 border-r border-black dark:border-white">
+                          {employee.name}
+                        </td>
+                        <td className="px-6 py-4 border-r border-black dark:border-white">
+                          {employee.position}
+                        </td>
+                        <td className="px-6 py-4 border-r border-black dark:border-white">
+                          {employee.mobileNumber}
+                        </td>
                         <td className="px-6 py-4 border-r border-black dark:border-white whitespace-nowrap">
                           ₱ {employee.basicPay}
                         </td>
@@ -490,7 +543,9 @@ export default function Dashboard() {
                         <td className="px-6 py-4 border-r border-black dark:border-white">
                           {additionalPayments || "None"}
                         </td>
-                        <td className="px-6 py-4 border-r border-black dark:border-white">{employee.salary}</td>
+                        <td className="px-6 py-4 border-r border-black dark:border-white">
+                          {employee.salary}
+                        </td>
 
                         <td className="px-6 py-4 border-r border-black dark:border-white">
                           <div className="flex">

@@ -172,8 +172,8 @@ export default function Register() {
               />
               {!passwordsMatch && (
                 <p class="mt-2 text-sm text-red-600 dark:text-red-500">
-                  <span class="font-medium">Error: </span> Confirm password do not
-                  match.
+                  <span class="font-medium">Error: </span> Confirm password do
+                  not match.
                 </p>
               )}
             </div>

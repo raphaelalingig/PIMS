@@ -4,7 +4,8 @@ import logo from "../assets/logoOnly.png";
 
 export default function Navbar() {
   const [isDarkMode, setIsDarkMode] = React.useState(false);
-
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  const [userEmail, setUserEmail] = React.useState("");
   useEffect(() => {
     const savedTheme = localStorage.getItem("color-theme");
     if (
@@ -18,6 +19,34 @@ export default function Navbar() {
       document.documentElement.classList.remove("dark");
     }
   }, []);
+
+  useEffect(() => {
+    const checkAuthentication = localStorage.getItem("isAuthenticated");
+    const userCredentialsString = localStorage.getItem("userCredentials");
+    if (checkAuthentication === "true") {
+      console.log("token found");
+      setIsAuthenticated(true);
+
+      if (userCredentialsString) {
+        try {
+          // Parse the JSON string to an object
+          const userCredentials = JSON.parse(userCredentialsString);
+
+          // Access the email inside the Data object
+          if (userCredentials.Data && userCredentials.Data.email) {
+            setUserEmail(userCredentials.Data.email);
+          }
+        } catch (error) {
+          console.error("Could not parse userCredentials:", error);
+        }
+      } else {
+        console.log("No userCredentials found in localStorage.");
+      }
+    } else {
+      console.log("token not found");
+      setIsAuthenticated(false);
+    }
+  }, [isAuthenticated]);
 
   const handleDarkMode = () => {
     if (isDarkMode) {
@@ -41,25 +70,67 @@ export default function Navbar() {
           </div>
         </Link>
         <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-          <div className="">
-            <Link to={"/login"}>
-              <button
-                type="button"
-                class="mr-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          {isAuthenticated ? (
+            <button
+              id="dropdownAvatarNameButton"
+              data-dropdown-toggle="dropdownAvatarName"
+              class="flex mr-4 items-center text-sm pe-1 font-medium text-gray-900 rounded-full hover:text-blue-600 dark:hover:text-blue-500 md:me-0 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:text-white"
+              type="button"
+            >
+              <span class="sr-only">Open user menu</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-6"
               >
-                Login
-              </button>
-            </Link>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                />
+              </svg>
+              {userEmail}
+              <svg
+                class="w-2.5 h-2.5 ms-3"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 10 6"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="m1 1 4 4 4-4"
+                />
+              </svg>
+            </button>
+          ) : (
+            <div className="">
+              <Link to={"/login"}>
+                <button
+                  type="button"
+                  class="mr-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                >
+                  Login
+                </button>
+              </Link>
 
-            <Link to={"/register"}>
-              <button
-                type="button"
-                class="mr-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              >
-                Register
-              </button>
-            </Link>
-          </div>
+              <Link to={"/register"}>
+                <button
+                  type="button"
+                  class="mr-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                >
+                  Register
+                </button>
+              </Link>
+            </div>
+          )}
+
           <button
             data-collapse-toggle="navbar-cta"
             type="button"
