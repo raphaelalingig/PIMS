@@ -1,11 +1,18 @@
-import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logoOnly.png";
+import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
   const [isDarkMode, setIsDarkMode] = React.useState(false);
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [userEmail, setUserEmail] = React.useState("");
+  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
+
+  const { logout } = useAuth();
+
+  const navigate = useNavigate();
+
   useEffect(() => {
     const savedTheme = localStorage.getItem("color-theme");
     if (
@@ -58,6 +65,10 @@ export default function Navbar() {
     }
     setIsDarkMode(!isDarkMode);
   };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
   return (
     <nav class="bg-white border-b border-gray-200 dark:bg-gray-900 ">
       <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -75,8 +86,47 @@ export default function Navbar() {
               id="dropdownAvatarNameButton"
               data-dropdown-toggle="dropdownAvatarName"
               class="flex mr-4 items-center text-sm pe-1 font-medium text-gray-900 rounded-full hover:text-blue-600 dark:hover:text-blue-500 md:me-0 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:text-white"
-              type="button"
+              onClick={toggleDropdown}
             >
+              {isDropdownOpen && (
+                <div
+                  id="dropdown"
+                  class="z-10 absolute top-14 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+                >
+                  <ul
+                    class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                    aria-labelledby="dropdownDefaultButton"
+                  >
+                    <li>
+                      <div class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                        <button
+                          onClick={() => logout(navigate)}
+                          className="flex items-center gap-4 text-red-600"
+                        >
+                          <div>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke-width="1.5"
+                              stroke="currentColor"
+                              class="size-6"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
+                              />
+                            </svg>
+                          </div>
+                          <h1> Sign out</h1>
+                        </button>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              )}
+
               <span class="sr-only">Open user menu</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"

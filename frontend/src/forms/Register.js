@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import api_url from "../components/api_url";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -16,16 +17,17 @@ export default function Register() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+
     // Check if passwords match
     if (password !== confirm_password) {
-      setPasswordsMatch(false); // Set state to indicate passwords do not match
+      setPasswordsMatch(false);
       console.error("Passwords do not match");
-      // Optional: Focus the password input
       document.getElementById("password").focus();
       return;
     } else {
-      setPasswordsMatch(true); // Set state to indicate passwords match
+      setPasswordsMatch(true);
     }
+
     try {
       const response = await api_url.post("/user/register", {
         email,
@@ -36,14 +38,30 @@ export default function Register() {
         confirm_password,
       });
 
-      if (response.status === 200 && response.data.status === "success") {
-        console.log("Registration successful");
+      // Check if the response indicates success
+      if (response.status === 200 && response.data.Status === "success") {
+        console.log("Registration successful:", response.data);
+
+        await Swal.fire({
+          title: "Account Registered Successfully",
+          text: "Please login to continue",
+          icon: "success",
+          confirmButtonColor: "#1A56DB",
+        });
+
+        // Navigate after the Swal promise resolves
         navigate("/login");
       } else {
-        console.error("Registration failed:", response.data.message);
+        console.error(
+          "Registration failed:",
+          response.data.message || "Unknown error"
+        );
       }
     } catch (error) {
-      console.error("Error during registration:", error);
+      console.error(
+        "Error during registration:",
+        error.response?.data || error.message
+      );
     }
   };
 
