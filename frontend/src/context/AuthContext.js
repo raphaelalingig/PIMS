@@ -84,6 +84,12 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("userCredentials");
     setUserCredentials(null);
     console.log("Logout successful, isAuthenticated set to:", false);
+    Swal.fire({
+      title: "Logout Successfully",
+      icon: "success",
+      confirmButtonColor: "#1A56DB",
+    });
+
     navigate("/login");
   };
 
