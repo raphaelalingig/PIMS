@@ -3,9 +3,10 @@ import pkg from "body-parser";
 import { config } from "dotenv";
 import registerUserRouter from "./routes/Users/registerUser.js";
 import loginUserRouter from "./routes/Users/loginUser.js";
-import payrollListsRouter from "./routes/Payroll/payrollLists.js";
+import addPayrollListsRouter from "./routes/Payroll/createPayroll.js";
 import jobPositionsRouter from "./routes/JobPosition/jobPositions.js";
 import payrollEntriesRouter from "./routes/Payroll/payrollEntries.js";
+import payrollListsRouter from "./routes/Payroll/payrollLists.js";
 import { initializeDatabase } from "./config/initializeDatabase.js"; // Adjust the path accordingly
 import cors from "cors";
 
@@ -15,11 +16,13 @@ config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors({
-  origin: '*', // Change this to your frontend's origin
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
-  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
-}));
+app.use(
+  cors({
+    origin: "*", // Change this to your frontend's origin
+    methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
+    credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+  })
+);
 
 // Middleware
 app.use(json());
@@ -37,6 +40,11 @@ app.use(json());
     app.use("/api/user/login", loginUserRouter);
 
     // Payroll
+
+    //add
+    app.use("/api/add/payroll-lists", addPayrollListsRouter);
+
+    // base on id
     app.use("/api/payroll-lists", payrollListsRouter);
 
     // Job Positions
@@ -44,7 +52,6 @@ app.use(json());
 
     // Payroll Entries
     app.use("/api/payroll-entries", payrollEntriesRouter);
-
 
     // Base Route
     app.get("/", (req, res) => {

@@ -32,30 +32,11 @@ export async function initializeDatabase() {
       `CREATE TABLE IF NOT EXISTS PayrollLists (
                 payroll_list_id INT PRIMARY KEY AUTO_INCREMENT,
                 user_id INT,
+                FOREIGN KEY (user_id) REFERENCES Users(user_id),
                 list_name VARCHAR(100),
+                description TEXT,
                 created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-                status ENUM('active', 'inactive'),
-                FOREIGN KEY (user_id) REFERENCES Users(user_id)
-            )`,
-      `CREATE TABLE IF NOT EXISTS JobPositions (
-                position_id INT PRIMARY KEY AUTO_INCREMENT,
-                title VARCHAR(100),
-                salary DECIMAL(10, 2)
-            )`,
-      `CREATE TABLE IF NOT EXISTS Employees (
-                employee_id INT PRIMARY KEY AUTO_INCREMENT,
-                payroll_list_id INT,
-                employee_name VARCHAR(100),
-                FOREIGN KEY (payroll_list_id) REFERENCES PayrollLists(payroll_list_id)
-            )`,
-      `CREATE TABLE IF NOT EXISTS PayrollEntries (
-                entry_id INT PRIMARY KEY AUTO_INCREMENT,
-                payroll_list_id INT,
-                employee_id INT,
-                position_id INT,
-                FOREIGN KEY (payroll_list_id) REFERENCES PayrollLists(payroll_list_id),
-                FOREIGN KEY (employee_id) REFERENCES Employees(employee_id),
-                FOREIGN KEY (position_id) REFERENCES JobPositions(position_id)
+                status INT DEFAULT 0
             )`,
     ];
 

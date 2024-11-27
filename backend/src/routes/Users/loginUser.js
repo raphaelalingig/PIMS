@@ -41,18 +41,27 @@ router.post("/", async (req, res) => {
       });
     }
 
-    // User found, generate a JWT
+    // User found, extract user_id and other details
     const user = results[0]; // Assuming the first result is the user
-    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
+    const { user_id, email: userEmail, password: userPassword } = user;
+
+    // Generate a JWT
+    const token = jwt.sign({ id: user_id, email: userEmail }, JWT_SECRET, {
       expiresIn: "1h",
     });
 
-    // Send success response with the token
+    // Send success response with the token and user_id
     res.status(200).json({
       status: "success",
       message: "Login successful",
       token, // Include the token in the response
-      Data: req.body,
+      // Include user_id
+      Data: {
+        email: userEmail, // Include email for confirmation
+        password: userPassword,
+        user_id,
+      },
+      // Include password for confirmation
     });
   } catch (error) {
     res.status(500).json({

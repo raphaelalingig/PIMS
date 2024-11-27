@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
           });
 
           // Navigate to the dashboard
-          navigate("/dashboard");
+          navigate("/authenticated-dashboard");
         } else {
           // Clear token and set isAuthenticated to false if token mismatch
           localStorage.removeItem("token");

@@ -1,21 +1,41 @@
-import express from 'express';
+import express from "express";
 const router = express.Router();
-import db from '../../config/db.js';  // Adjust this import as per your db config
+import db from "../../config/db.js"; // Adjust the path as per your project structure
 
-// Create a payroll list
-router.post('/', async (req, res) => {
-    const { user_id, list_name, status } = req.body;
-    try {
-        await db.query(
-            'INSERT INTO PayrollLists (user_id, list_name, status) VALUES (?, ?, ?)',
-            [user_id, list_name, status]
-        );
-        res.status(201).send('Payroll list created');
-    } catch (error) {
-        res.status(500).send(error.message);
+// Get payroll entries for a specific user
+router.post("/:user_id", async (req, res) => {
+  const { user_id } = req.params; // Extract user_id from the request body
+
+  // Validate the input
+  if (!user_id) {
+    return res
+      .status(400)
+      .json({ error: "user_id is required in the request body." });
+  }
+
+  try {
+    // Query the database for payroll entries belonging to the specified user
+    const query = `
+      SELECT * 
+      FROM PayrollLists 
+      WHERE user_id = ?
+    `;
+    const [rows] = await db.query(query, [user_id]); // Assuming db.query returns [rows]
+
+    // Check if rows exist
+    if (rows.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No payroll entries found for this user." });
     }
-});
 
-// Additional endpoints: GET, PUT, DELETE for payroll lists
+    res.status(200).json(rows); // Return the rows
+  } catch (error) {
+    console.error("Error fetching payroll entries:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching payroll entries." });
+  }
+});
 
 export default router;

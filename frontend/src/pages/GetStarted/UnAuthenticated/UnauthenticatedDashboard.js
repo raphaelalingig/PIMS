@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "../../components/Navbar";
+import Navbar from "../../../components/Navbar";
 import AddEmployee from "./DashboardTableActions/AddEmployee";
 import Swal from "sweetalert2";
 import EditEmployee from "./DashboardTableActions/EditEmployee";
