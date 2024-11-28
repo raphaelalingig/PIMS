@@ -7,6 +7,8 @@ import addPayrollListsRouter from "./routes/Payroll/createPayroll.js";
 import jobPositionsRouter from "./routes/JobPosition/jobPositions.js";
 import payrollEntriesRouter from "./routes/Payroll/payrollEntries.js";
 import payrollListsRouter from "./routes/Payroll/payrollLists.js";
+import deletePayrollRouter from "./routes/Payroll/deletePayroll.js";
+import editPayrollRouter from "./routes/Payroll/editPayroll.js";
 import { initializeDatabase } from "./config/initializeDatabase.js"; // Adjust the path accordingly
 import cors from "cors";
 
@@ -44,8 +46,10 @@ app.use(json());
     //add
     app.use("/api/add/payroll-lists", addPayrollListsRouter);
 
-    // base on id
+    // get payroll base on id
     app.use("/api/payroll-lists", payrollListsRouter);
+    app.use("/api/delete/payroll-lists", deletePayrollRouter);
+    app.use("/api/edit/payroll-lists", editPayrollRouter);
 
     // Job Positions
     app.use("/api/job-positions", jobPositionsRouter);
