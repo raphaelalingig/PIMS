@@ -40,6 +40,7 @@ export default function EditPayrollLists({
           title: `Payroll List: ${editValue.list_name} `,
           text: "successfully updated!.",
           icon: "success",
+          confirmButtonColor: "#3085d6",
         });
       }
     });

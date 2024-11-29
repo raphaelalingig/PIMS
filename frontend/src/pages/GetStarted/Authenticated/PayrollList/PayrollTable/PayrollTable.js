@@ -4,6 +4,7 @@ import api_url from "../../../../../components/api_url";
 import moment from "moment";
 import EditPayrollLists from "./Actions/EditPayrollLists";
 import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
 
 export default function PayrollTable() {
   const [addPayrollLists, setAddPayrollLists] = useState(false);
@@ -90,6 +91,17 @@ export default function PayrollTable() {
         });
       }
     });
+  };
+
+  const handlePayrollNameClick = (
+    payroll_id,
+    list_name,
+    description,
+    created_date,
+    status,
+    navigate
+  ) => {
+    console.log("Payroll name clicked");
   };
   return (
     <div className="p-4 relative overflow-x-auto sm:rounded-lg">
@@ -188,7 +200,12 @@ export default function PayrollTable() {
                     scope="row"
                     class="px-6 py-4 hover:underline cursor-pointer font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
-                    {product.list_name}
+                    <Link
+                      to={`/PayrollContent/${product.payroll_list_id}/${product.list_name}`}
+                      className="hover:underline cursor-pointer"
+                    >
+                      {product.list_name}
+                    </Link>
                   </th>
                   <td className="px-6 py-4">{product.description}</td>
                   <td className="px-6 py-4">{formattedDate}</td>

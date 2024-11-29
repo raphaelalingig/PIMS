@@ -8,6 +8,7 @@ import UnAuthenticatedDashboard from "./pages/GetStarted/UnAuthenticated/Unauthe
 import AuthenticatedDashboard from "./pages/GetStarted/Authenticated/AuthenticatedDashboard";
 import { AuthProvider } from "./context/AuthContext";
 import AuthenticatedRoute from "./components/CheckifAuthenticated/AuthenticatedRoute";
+import PayrollContent from "./pages/GetStarted/Authenticated/PayrollNameContent/PayrollContent";
 function App() {
   return (
     <AuthProvider>
@@ -27,6 +28,10 @@ function App() {
                 <AuthenticatedDashboard />
               </AuthenticatedRoute>
             }
+          />
+          <Route
+            path="/PayrollContent/:id/:name"
+            element={<PayrollContent />}
           />
         </Routes>
       </BrowserRouter>
