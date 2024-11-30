@@ -47,6 +47,7 @@ export async function initializeDatabase() {
                 created_date DATETIME DEFAULT CURRENT_TIMESTAMP
       )`,
       `CREATE TABLE IF NOT EXISTS PayrollEmployees (
+                employee_id INT PRIMARY KEY AUTO_INCREMENT,
                 payroll_list_id INT,
                 FOREIGN KEY (payroll_list_id) REFERENCES PayrollLists(payroll_list_id),
                 employee_name VARCHAR(100),
