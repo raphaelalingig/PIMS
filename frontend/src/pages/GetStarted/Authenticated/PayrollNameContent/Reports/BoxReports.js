@@ -1,7 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PieChart from "./PieChart";
+import api_url from "../../../../../components/api_url";
 
-export default function BoxReports({ payrollName }) {
+export default function BoxReports({ payrollName, payrollID }) {
+  const [payrollContent, setPayrollContent] = useState([]);
+
+  useEffect(() => {
+    const fetchPayrollContent = async () => {
+      try {
+        const response = await api_url.post(`payroll-content/${payrollID}`);
+        if (response.status === 200) {
+          setPayrollContent(response.data);
+          console.log(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching payroll content:", error);
+      }
+    };
+
+    fetchPayrollContent();
+  }, [payrollID]);
+
   return (
     <>
       <div className="flex mt-4 justify-center gap-3">
@@ -13,8 +32,13 @@ export default function BoxReports({ payrollName }) {
             <h1 className="font-bold text-base dark:text-white ">
               Payroll Name:
             </h1>
-            <h1 className="font-bold text-2xl py-2 dark:text-white">
-              {payrollName}
+            <h1 className="font-bold text-xl py-2 dark:text-white whitespace-normal">
+              {payrollName} -{" "}
+              <span className="text-sm">
+                {payrollContent.length > 0
+                  ? payrollContent[0].description
+                  : "Loading..."}
+              </span>
             </h1>
           </div>
           <div

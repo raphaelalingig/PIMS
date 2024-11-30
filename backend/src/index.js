@@ -4,11 +4,13 @@ import { config } from "dotenv";
 import registerUserRouter from "./routes/Users/registerUser.js";
 import loginUserRouter from "./routes/Users/loginUser.js";
 import addPayrollListsRouter from "./routes/Payroll/createPayroll.js";
-import jobPositionsRouter from "./routes/JobPosition/jobPositions.js";
 import payrollEntriesRouter from "./routes/Payroll/payrollEntries.js";
 import payrollListsRouter from "./routes/Payroll/payrollLists.js";
 import deletePayrollRouter from "./routes/Payroll/deletePayroll.js";
 import editPayrollRouter from "./routes/Payroll/editPayroll.js";
+import getPayrollContentRouter from "./routes/Payroll/PayrollContentOnly.js";
+import showJobPositions from "./routes/Payroll/JobPosition/showJobPositions.js";
+import addJobpPositionRouter from "./routes/Payroll/JobPosition/addJobPosition.js";
 import { initializeDatabase } from "./config/initializeDatabase.js"; // Adjust the path accordingly
 import cors from "cors";
 
@@ -50,9 +52,12 @@ app.use(json());
     app.use("/api/payroll-lists", payrollListsRouter);
     app.use("/api/delete/payroll-lists", deletePayrollRouter);
     app.use("/api/edit/payroll-lists", editPayrollRouter);
+    //Show only payroll content base on id
+    app.use("/api/payroll-content", getPayrollContentRouter);
 
     // Job Positions
-    app.use("/api/job-positions", jobPositionsRouter);
+    app.use("/api/job-positions", showJobPositions);
+    app.use("/api/add-job-positions", addJobpPositionRouter);
 
     // Payroll Entries
     app.use("/api/payroll-entries", payrollEntriesRouter);

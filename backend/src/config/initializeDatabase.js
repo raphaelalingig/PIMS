@@ -38,6 +38,14 @@ export async function initializeDatabase() {
                 created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
                 status INT DEFAULT 0
             )`,
+      `CREATE TABLE IF NOT EXISTS JobPositions (
+        job_position_id INT PRIMARY KEY AUTO_INCREMENT,
+        payroll_list_id INT,
+        title VARCHAR(100),
+        salary DECIMAL(10, 2),
+        FOREIGN KEY (payroll_list_id) REFERENCES PayrollLists(payroll_list_id),
+        created_date DATETIME DEFAULT CURRENT_TIMESTAMP
+      )`,
     ];
 
     // Execute table creation queries

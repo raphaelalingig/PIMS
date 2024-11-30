@@ -16,7 +16,7 @@ export default function PayrollContent() {
   return (
     <div className="bg-[#F4F6FA] dark:bg-gray-900 min-h-screen animate__animated animate__fadeIn">
       <Navbar />
-      <BoxReports id={id} payrollName={name} />
+      <BoxReports id={id} payrollName={name} payrollID={id} />
       <div className="px-28 py-6">
         <div class="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
           <div>
