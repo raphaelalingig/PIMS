@@ -11,6 +11,8 @@ import editPayrollRouter from "./routes/Payroll/editPayroll.js";
 import getPayrollContentRouter from "./routes/Payroll/PayrollContentOnly.js";
 import showJobPositions from "./routes/Payroll/JobPosition/showJobPositions.js";
 import addJobpPositionRouter from "./routes/Payroll/JobPosition/addJobPosition.js";
+import deleteJobPositionRouter from "./routes/Payroll/JobPosition/deleteJobPositions.js";
+import editJobPositionRouter from "./routes/Payroll/JobPosition/editJobPosition.js";
 import { initializeDatabase } from "./config/initializeDatabase.js"; // Adjust the path accordingly
 import cors from "cors";
 
@@ -58,6 +60,8 @@ app.use(json());
     // Job Positions
     app.use("/api/job-positions", showJobPositions);
     app.use("/api/add-job-positions", addJobpPositionRouter);
+    app.use("/api/delete-job-positions", deleteJobPositionRouter);
+    app.use("/api/edit-job-positions", editJobPositionRouter);
 
     // Payroll Entries
     app.use("/api/payroll-entries", payrollEntriesRouter);
