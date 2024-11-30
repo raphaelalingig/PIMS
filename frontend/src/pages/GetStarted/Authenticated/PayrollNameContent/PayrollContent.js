@@ -71,6 +71,7 @@ export default function PayrollContent() {
               <AddJobPositions
                 isJobPositionModalOpen={isJobPositionModalOpen}
                 setIsJobPositionModalOpen={setIsJobPositionModalOpen}
+                payrollName={name}
               />
             )}
             <button
