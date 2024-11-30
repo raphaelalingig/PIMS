@@ -39,12 +39,31 @@ export async function initializeDatabase() {
                 status INT DEFAULT 0
             )`,
       `CREATE TABLE IF NOT EXISTS JobPositions (
-        job_position_id INT PRIMARY KEY AUTO_INCREMENT,
-        payroll_list_id INT,
-        title VARCHAR(100),
-        salary DECIMAL(10, 2),
-        FOREIGN KEY (payroll_list_id) REFERENCES PayrollLists(payroll_list_id),
-        created_date DATETIME DEFAULT CURRENT_TIMESTAMP
+                job_position_id INT PRIMARY KEY AUTO_INCREMENT,
+                payroll_list_id INT,
+                title VARCHAR(100),
+                salary DECIMAL(10, 2),
+                FOREIGN KEY (payroll_list_id) REFERENCES PayrollLists(payroll_list_id),
+                created_date DATETIME DEFAULT CURRENT_TIMESTAMP
+      )`,
+      `CREATE TABLE IF NOT EXISTS PayrollEmployees (
+                payroll_list_id INT,
+                FOREIGN KEY (payroll_list_id) REFERENCES PayrollLists(payroll_list_id),
+                employee_name VARCHAR(100),
+                job_position VARCHAR(100),
+                mobile_number VARCHAR(15),
+                basic_pay DECIMAL(10, 2),
+                salary_type INT,
+                payment_status INT,
+                overtime_status INT,
+                overtime_hours INT,
+                nightDifferential_status INT,
+                nightDifferential_hours INT,
+                deductions_status INT,
+                deduction_reason VARCHAR(255),
+                deductions_amount DECIMAL(10, 2),
+                total_pay DECIMAL(10, 2),
+                created_date DATETIME DEFAULT CURRENT_TIMESTAMP
       )`,
     ];
 

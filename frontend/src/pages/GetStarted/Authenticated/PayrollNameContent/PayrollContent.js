@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "../../../../components/Navbar";
 import BoxReports from "./Reports/BoxReports";
 import AddJobPositions from "./Actions/JobPositions";
+import AddEmployee from "./Actions/AddEmployee";
 
 export default function PayrollContent() {
   const { id, name } = useParams();
 
-  const [isJobPositionModalOpen, setIsJobPositionModalOpen] =
-    React.useState(false);
+  const [isJobPositionModalOpen, setIsJobPositionModalOpen] = useState(false);
+
+  const [isAddEmployeeModalOpen, setIsAddEmployeeModalOpen] = useState(false);
 
   console.log("ID: ", id);
   console.log("Name: ", name);
@@ -71,7 +73,8 @@ export default function PayrollContent() {
               <AddJobPositions
                 isJobPositionModalOpen={isJobPositionModalOpen}
                 setIsJobPositionModalOpen={setIsJobPositionModalOpen}
-                payrollName={name}
+                isAddEmployeeModalOpen={isAddEmployeeModalOpen}
+                setIsAddEmployeeModalOpen={setIsAddEmployeeModalOpen}
               />
             )}
             <button
@@ -79,6 +82,7 @@ export default function PayrollContent() {
               data-dropdown-toggle="dropdownRadio"
               class="gap-1 inline-flex items-center text-white bg-blue-700 hover:bg-blue-800 border border-black focus:outline-none  focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-3 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
               type="button"
+              onClick={() => setIsAddEmployeeModalOpen(true)}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -96,6 +100,14 @@ export default function PayrollContent() {
               </svg>
               Add Employee
             </button>
+            {isAddEmployeeModalOpen && (
+              <AddEmployee
+                isAddEmployeeModalOpen={isAddEmployeeModalOpen}
+                setIsAddEmployeeModalOpen={setIsAddEmployeeModalOpen}
+                isJobPositionModalOpen={isJobPositionModalOpen}
+                setIsJobPositionModalOpen={setIsJobPositionModalOpen}
+              />
+            )}
           </div>
         </div>
       </div>

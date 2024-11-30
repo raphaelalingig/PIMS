@@ -5,6 +5,7 @@ import api_url from "../../../../../components/api_url";
 export default function JobPositions({
   isJobPositionModalOpen,
   setIsJobPositionModalOpen,
+  setIsAddEmployeeModalOpen,
 }) {
   const [rows, setRows] = useState([]);
   const [nextId, setNextId] = useState(1);
@@ -144,6 +145,12 @@ export default function JobPositions({
     setEditingId(id); // Enable editing for this row
   };
 
+  const handleAddEmployee = () => {
+    setIsJobPositionModalOpen(false);
+
+    setIsAddEmployeeModalOpen(true);
+  };
+
   return (
     <div
       id="crud-modal"
@@ -151,15 +158,38 @@ export default function JobPositions({
       aria-hidden="true"
       style={{
         backgroundColor: "rgba(0, 0, 0, 0.5)",
+        zIndex: 9999,
       }}
       className="animate__animated animate__fadeIn flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
     >
       <div className="relative p-4 w-full max-w-4xl max-h-full">
         <div className="relative bg-white rounded-lg shadow dark:bg-gray-800">
           <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Job Positions
-            </h3>
+            <div className="flex items-center gap-4">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                Job Positions
+              </h3>
+              <div
+                onClick={handleAddEmployee}
+                className="flex items-center text-black dark:text-white gap-1 p-1 border border-black dark:border-white rounded-md"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="size-5"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
+                  />
+                </svg>
+                <h1>Proceed to Add Employee</h1>
+              </div>
+            </div>
             <button
               type="button"
               className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
