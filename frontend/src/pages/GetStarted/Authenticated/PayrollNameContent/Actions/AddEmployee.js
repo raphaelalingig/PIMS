@@ -25,7 +25,7 @@ export default function AddEmployee({
   const [isDeductions, setIsDeductions] = useState(false);
   const [overtimeHours, setOvertimeHours] = useState(0);
   const [nightDifferentialHours, setNightDifferentialHours] = useState(0);
-  const [deductionsReasons, setDeductionsReasons] = useState("0");
+  const [deductionsReasons, setDeductionsReasons] = useState("");
   const [deductionsAmount, setDeductionsAmount] = useState(0);
 
   const [salaryDate, setSalaryDate] = useState(new Date());
@@ -141,94 +141,159 @@ export default function AddEmployee({
     deductionsAmount,
   ]);
 
-  const handleAddEmployee = (e) => {
+  // const handleAddEmployee = (e) => {
+  //   e.preventDefault();
+
+  //   Swal.fire({
+  //     title: "Do you want to add this employee?",
+  //     text: "",
+  //     icon: "question",
+  //     showCancelButton: true,
+  //     confirmButtonColor: "#1A56DB",
+  //     cancelButtonColor: "#d33",
+  //     confirmButtonText: "Confirm",
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //       const formatDate = (date) => {
+  //         return new Intl.DateTimeFormat("en-US", {
+  //           month: "short",
+  //           day: "numeric",
+  //           year: "numeric",
+  //           hour: "numeric",
+  //           minute: "2-digit",
+  //           hour12: true,
+  //         }).format(new Date(date));
+  //       };
+  //       const newEmployee = {
+  //         id: Date.now(), // Add a unique ID for each employee
+  //         name,
+  //         position,
+  //         mobileNumber,
+  //         basicPay,
+  //         salaryType,
+  //         salary,
+  //         salaryDate: formatDate(salaryDate),
+  //         paymentStatus,
+  //         nightDifferential: {
+  //           enabled: isNighDifferential,
+  //           hours: nightDifferentialHours,
+  //         },
+  //         overtime: {
+  //           enabled: isOvertime,
+  //           hours: overtimeHours,
+  //         },
+  //         deductions: {
+  //           enabled: isDeductions,
+  //           reasons: deductionsReasons,
+  //           amount: deductionsAmount,
+  //         },
+  //       };
+
+  //       // Get existing employees from sessionStorage
+  //       const existingEmployees =
+  //         JSON.parse(sessionStorage.getItem("employeeData")) || [];
+
+  //       // Add new employee to the array
+  //       const updatedEmployees = [...existingEmployees, newEmployee];
+
+  //       // Store updated array back in sessionStorage
+  //       sessionStorage.setItem(
+  //         "employeeData",
+  //         JSON.stringify(updatedEmployees)
+  //       );
+  //       fetchData();
+  //       setIsAddEmployeeModalOpen(false);
+  //       console.log("Stored employee data:", updatedEmployees);
+  //     }
+  //   });
+
+  //   // Create the new employee object
+
+  //   // Optional: Keep the console.logs for debugging
+  //   console.log("Name: ", name);
+  //   console.log("Position: ", position);
+  //   console.log("Mobile Number: ", mobileNumber);
+  //   console.log("Basic Pay: ", basicPay);
+  //   console.log("Salary Type ", salaryType);
+  //   console.log("Salary: ", salary);
+  //   console.log("Payment Status: ", paymentStatus);
+  //   console.log(
+  //     "Night Differential + hours + rate ",
+  //     isNighDifferential,
+  //     nightDifferentialHours
+  //   );
+  //   console.log("Overtime + hours + rate ", isOvertime, overtimeHours);
+  //   console.log(
+  //     "Deductions + Reasons + Amount ",
+  //     isDeductions,
+  //     deductionsReasons,
+  //     deductionsAmount
+  //   );
+  // };
+
+  const handleAddEmployee = async (e) => {
     e.preventDefault();
 
-    Swal.fire({
-      title: "Do you want to add this employee?",
-      text: "",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#1A56DB",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Confirm",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const formatDate = (date) => {
-          return new Intl.DateTimeFormat("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-            hour: "numeric",
-            minute: "2-digit",
-            hour12: true,
-          }).format(new Date(date));
-        };
-        const newEmployee = {
-          id: Date.now(), // Add a unique ID for each employee
-          name,
-          position,
-          mobileNumber,
-          basicPay,
-          salaryType,
-          salary,
-          salaryDate: formatDate(salaryDate),
-          paymentStatus,
-          nightDifferential: {
-            enabled: isNighDifferential,
-            hours: nightDifferentialHours,
-          },
-          overtime: {
-            enabled: isOvertime,
-            hours: overtimeHours,
-          },
-          deductions: {
-            enabled: isDeductions,
-            reasons: deductionsReasons,
-            amount: deductionsAmount,
-          },
-        };
+    // Validate required fields
+    if (
+      !name ||
+      !position ||
+      !mobileNumber ||
+      !basicPay ||
+      !salaryType ||
+      !paymentStatus
+    ) {
+      alert("Please fill in all required fields");
+      return;
+    }
 
-        // Get existing employees from sessionStorage
-        const existingEmployees =
-          JSON.parse(sessionStorage.getItem("employeeData")) || [];
+    // Prepare the request payload using the existing calculated salary
+    const payload = {
+      payroll_list_id: id, // Adjust as needed
+      employee_name: name,
+      job_position: position,
+      mobile_number: mobileNumber,
+      basic_pay: parseFloat(basicPay),
+      salary_type: parseInt(salaryType),
+      payment_status: parseInt(paymentStatus),
+      overtime_status: isOvertime ? 1 : 0,
+      overtime_hours: isOvertime ? parseFloat(overtimeHours) : 0,
+      nightDifferential_status: isNighDifferential ? 1 : 0,
+      nightDifferential_hours: isNighDifferential
+        ? parseFloat(nightDifferentialHours)
+        : 0,
+      deductions_status: isDeductions ? 1 : 0,
+      deduction_reason: isDeductions ? deductionsReasons : null,
+      deductions_amount: isDeductions ? parseFloat(deductionsAmount) : 0,
+      total_pay: parseFloat(salary), // Using the calculated salary from state
+    };
 
-        // Add new employee to the array
-        const updatedEmployees = [...existingEmployees, newEmployee];
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/add-payroll-employees",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
-        // Store updated array back in sessionStorage
-        sessionStorage.setItem(
-          "employeeData",
-          JSON.stringify(updatedEmployees)
-        );
-        fetchData();
-        setIsAddEmployeeModalOpen(false);
-        console.log("Stored employee data:", updatedEmployees);
+      const data = await response.json();
+
+      if (data.success) {
+        alert("Employee added successfully!");
+        setIsAddEmployeeModalOpen(false); // Close the modal
+        // You might want to add a function to refresh the employee list here
+        // e.g., fetchEmployees();
+      } else {
+        alert(`Failed to add employee: ${data.message}`);
       }
-    });
-
-    // Create the new employee object
-
-    // Optional: Keep the console.logs for debugging
-    console.log("Name: ", name);
-    console.log("Position: ", position);
-    console.log("Mobile Number: ", mobileNumber);
-    console.log("Basic Pay: ", basicPay);
-    console.log("Salary Type ", salaryType);
-    console.log("Salary: ", salary);
-    console.log("Payment Status: ", paymentStatus);
-    console.log(
-      "Night Differential + hours + rate ",
-      isNighDifferential,
-      nightDifferentialHours
-    );
-    console.log("Overtime + hours + rate ", isOvertime, overtimeHours);
-    console.log(
-      "Deductions + Reasons + Amount ",
-      isDeductions,
-      deductionsReasons,
-      deductionsAmount
-    );
+    } catch (error) {
+      console.error("Error adding employee:", error);
+      alert("Failed to add employee. Please try again.");
+    }
   };
 
   const handleClickAddJobPosition = () => {
@@ -304,7 +369,7 @@ export default function AddEmployee({
                   >
                     Position/Job Title{" "}
                     <span
-                      className="text-red-500 cursor-pointer p-1 border-black dark:border-white border rounded-md text-xs"
+                      className="text-black dark:text-white bg-gray-100 dark:bg-gray-600 cursor-pointer p-1 border-black dark:border-white border rounded-md text-xs"
                       onClick={handleClickAddJobPosition}
                     >
                       Add Job Position
@@ -313,6 +378,16 @@ export default function AddEmployee({
                   <select
                     id="jobPositions"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    onChange={(e) => {
+                      const selectedJob = jobPositions.find(
+                        (job) =>
+                          job.job_position_id === parseInt(e.target.value)
+                      );
+                      if (selectedJob) {
+                        setBasicPay(selectedJob.salary);
+                        setPosition(selectedJob.title);
+                      }
+                    }}
                   >
                     <option value="" disabled selected>
                       Select Job Position
@@ -349,16 +424,16 @@ export default function AddEmployee({
                     for="basicPay"
                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >
-                    Basic Pay
+                    Daily Wage
                   </label>
                   <input
                     type="number"
                     name="basicPay"
                     id="basicPay"
-                    onChange={(e) => setBasicPay(e.target.value)}
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    value={basicPay}
+                    disabled
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                     required=""
-                    placeholder="Basic salary per day"
                   />
                 </div>
                 <div class="">
@@ -393,10 +468,10 @@ export default function AddEmployee({
                     onChange={(e) => setPaymentStatus(e.target.value)}
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   >
-                    <option selected="0">Select status</option>
-                    <option value="1">Paid</option>
-                    <option value="2">Pending</option>
-                    <option value="3">On Hold</option>
+                    <option selected={0}>Select status</option>
+                    <option value={1}>Paid</option>
+                    <option value={2}>Pending</option>
+                    <option value={3}>On Hold</option>
                   </select>
                 </div>
 
@@ -592,7 +667,7 @@ export default function AddEmployee({
                           Total Amount
                         </label>
                         <input
-                          type="text"
+                          type="number"
                           name="deductionRate"
                           id="deductionRate"
                           onChange={(e) => setDeductionsAmount(e.target.value)}

@@ -171,7 +171,7 @@ export default function JobPositions({
               </h3>
               <div
                 onClick={handleAddEmployee}
-                className="flex items-center text-black dark:text-white gap-1 p-1 border border-black dark:border-white rounded-md"
+                className="flex cursor-pointer items-center text-black dark:text-white gap-1 p-1 border border-black dark:border-white rounded-md"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -226,7 +226,7 @@ export default function JobPositions({
                     Position/Job Title
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    Salary
+                    Daily Wage
                   </th>
                   <th scope="col" className="px-6 py-3 rounded-e-lg">
                     Actions

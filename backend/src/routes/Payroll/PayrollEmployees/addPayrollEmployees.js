@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import db from "../../config/db.js";
+import db from "../../../config/db.js";
 
 // POST route to add a new payroll employee
 router.post("/", async (req, res) => {

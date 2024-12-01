@@ -12,7 +12,10 @@ import showJobPositions from "./routes/Payroll/JobPosition/showJobPositions.js";
 import addJobpPositionRouter from "./routes/Payroll/JobPosition/addJobPosition.js";
 import deleteJobPositionRouter from "./routes/Payroll/JobPosition/deleteJobPositions.js";
 import editJobPositionRouter from "./routes/Payroll/JobPosition/editJobPosition.js";
-import addPayrollEmployeesRouter from "./routes/Payroll/addPayrollEmployees.js";
+import addPayrollEmployeesRouter from "./routes/Payroll/PayrollEmployees/addPayrollEmployees.js";
+import showPayrollEmployeesRouter from "./routes/Payroll/PayrollEmployees/showPayrollEmployees.js";
+import editPayrollEmployeeRouter from "./routes/Payroll/PayrollEmployees/editPayrollEmployees.js";
+import deletePayrollEmployeeRouter from "./routes/Payroll/PayrollEmployees/deletePayrollEmployee.js";
 import { initializeDatabase } from "./config/initializeDatabase.js"; // Adjust the path accordingly
 import cors from "cors";
 
@@ -60,6 +63,9 @@ app.use(json());
     // Payroll Employees
 
     app.use("/api/add-payroll-employees", addPayrollEmployeesRouter);
+    app.use("/api/show-payroll-employees", showPayrollEmployeesRouter);
+    app.use("/api/edit-payroll-employee", editPayrollEmployeeRouter);
+    app.use("/api/delete-payroll-employee", deletePayrollEmployeeRouter);
 
     // Job Positions
     app.use("/api/job-positions", showJobPositions);
