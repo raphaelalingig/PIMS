@@ -4,6 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import Swal from "sweetalert2";
 import api_url from "../../../../../components/api_url";
 import { useParams } from "react-router-dom";
+import { Bounce, toast } from "react-toastify";
 
 export default function EditEmployee({
   fetchPayrollEMployees,
@@ -15,6 +16,7 @@ export default function EditEmployee({
   setIsJobPositionModalOpen,
 }) {
   const [jobPositions, setJobPositions] = useState([]);
+  const theme = localStorage.getItem("color-theme");
 
   const { id, payrollName } = useParams();
   console.log("ID from add employee: ", id);
@@ -186,7 +188,20 @@ export default function EditEmployee({
 
       if (data.success) {
         // Show success message
-        alert("Employee updated successfully");
+        toast.success(
+          `${editEmployeeDetails.employee_name} Employee added successfully!`,
+          {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: `${theme == "dark" ? "dark" : "light"}`,
+            transition: Bounce,
+          }
+        );
 
         // Close the modal
         setIsEditEmployeeModalOpen(false);
@@ -195,11 +210,36 @@ export default function EditEmployee({
         fetchPayrollEMployees(); // You'll need to implement this function to refresh the list
       } else {
         // Show error message
-        alert(data.message || "Failed to update employee");
+
+        toast.warn(
+          `Failed to update employee ${editEmployeeDetails.employee_name}!`,
+          {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: `${theme == "dark" ? "dark" : "light"}`,
+            transition: Bounce,
+          }
+        );
       }
     } catch (error) {
       console.error("Error updating employee:", error);
-      alert("An error occurred while updating the employee");
+
+      toast.error(`An error occurred while updating the employee!`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: `${theme == "dark" ? "dark" : "light"}`,
+        transition: Bounce,
+      });
     }
   };
 

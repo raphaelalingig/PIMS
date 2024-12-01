@@ -4,6 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import Swal from "sweetalert2";
 import api_url from "../../../../../components/api_url";
 import { useParams } from "react-router-dom";
+import { Bounce, toast } from "react-toastify";
 
 export default function AddEmployee({
   setIsAddEmployeeModalOpen,
@@ -143,6 +144,8 @@ export default function AddEmployee({
     deductionsAmount,
   ]);
 
+  const theme = localStorage.getItem("color-theme");
+
   const handleAddEmployee = async (e) => {
     e.preventDefault();
 
@@ -155,7 +158,17 @@ export default function AddEmployee({
       !salaryType ||
       !paymentStatus
     ) {
-      alert("Please fill in all required fields");
+      toast.success(`Please fill in all required fields`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: `${theme == "dark" ? "dark" : "light"}`,
+        transition: Bounce,
+      });
       return;
     }
 
@@ -197,16 +210,45 @@ export default function AddEmployee({
       const data = await response.json();
 
       if (data.success) {
-        alert("Employee added successfully!");
+        toast.success(`${name} Employee added successfully!`, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: `${theme == "dark" ? "dark" : "light"}`,
+          transition: Bounce,
+        });
         setIsAddEmployeeModalOpen(false); // Close the modal
 
         fetchPayrollEMployees();
       } else {
-        alert(`Failed to add employee: ${data.message}`);
+        toast.success(`Failed to add employee: ${name} `, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: `${theme == "dark" ? "dark" : "light"}`,
+          transition: Bounce,
+        });
       }
     } catch (error) {
-      console.error("Error adding employee:", error);
-      alert("Failed to add employee. Please try again.");
+      toast.success(`Failed to add employee: ${name} `, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: `${theme == "dark" ? "dark" : "light"}`,
+        transition: Bounce,
+      });
     }
   };
 
@@ -645,7 +687,7 @@ export default function AddEmployee({
                       d="m4.5 12.75 6 6 9-13.5"
                     />
                   </svg>
-                  Save
+                  Confirm
                 </button>
               </div>
             </form>

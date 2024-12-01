@@ -6,6 +6,7 @@ import AddJobPositions from "./Actions/JobPositions";
 import AddEmployee from "./Actions/AddEmployee";
 import api_url from "../../../../components/api_url";
 import EditEmployee from "./Actions/EditEmployee";
+import { Bounce, toast, ToastContainer } from "react-toastify";
 
 export default function PayrollContent() {
   const { id, name } = useParams();
@@ -36,6 +37,8 @@ export default function PayrollContent() {
     deduction_reason: "",
     job_position_id: 0,
   });
+
+  const theme = localStorage.getItem("color-theme");
 
   console.log("ID: ", id);
   console.log("Name: ", name);
@@ -98,7 +101,11 @@ export default function PayrollContent() {
     });
   };
 
-  const handleDeleteEmployee = async (employee_id, payroll_list_id) => {
+  const handleDeleteEmployee = async (
+    employee_id,
+    payroll_list_id,
+    employee_name
+  ) => {
     console.log("Employee ID:", employee_id);
     console.log("Payroll List ID:", payroll_list_id);
 
@@ -110,6 +117,17 @@ export default function PayrollContent() {
 
       if (response.status === 200) {
         fetchPayrollEMployees();
+        toast.success(`${employee_name} Employee deleted successfully!`, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: `${theme == "dark" ? "dark" : "light"}`,
+          transition: Bounce,
+        });
       }
     } catch (error) {
       console.log("Error in deleting employee:", error);
@@ -479,7 +497,8 @@ export default function PayrollContent() {
                             onClick={() =>
                               handleDeleteEmployee(
                                 employee.employee_id,
-                                employee.payroll_list_id
+                                employee.payroll_list_id,
+                                employee.employee_name
                               )
                             }
                           >

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api_url from "../../../../../components/api_url";
+import { Bounce, toast } from "react-toastify";
 
 export default function JobPositions({
   isJobPositionModalOpen,
@@ -11,6 +12,8 @@ export default function JobPositions({
   const [nextId, setNextId] = useState(1);
   const [editingId, setEditingId] = useState(null); // New state to track which row is being edited
   const { id } = useParams();
+
+  const theme = localStorage.getItem("color-theme");
 
   useEffect(() => {
     const fetchjobPositions = async () => {
@@ -72,9 +75,21 @@ export default function JobPositions({
       // Validate new rows
       const invalidRows = newRows.filter((row) => !row.title || !row.salary);
       if (invalidRows.length > 0) {
-        alert(
-          "Please fill in all required fields (title and salary) before submitting."
+        toast.warn(
+          "Please fill in all required fields (title and salary) before submitting.",
+          {
+            position: "bottom-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: `${theme == "dark" ? "dark" : "light"}`,
+            transition: Bounce,
+          }
         );
+
         return;
       }
 
@@ -122,6 +137,17 @@ export default function JobPositions({
           0
         );
         setNextId(maxId + 1);
+        toast.success(`Job position saved successfully`, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: `${theme == "dark" ? "dark" : "light"}`,
+          transition: Bounce,
+        });
       }
     } catch (error) {
       console.error("Error saving job positions:", error);
@@ -129,12 +155,23 @@ export default function JobPositions({
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id, title) => {
     try {
       await api_url.post("/delete-job-positions", {
         job_position_id: id,
       });
       setRows(rows.filter((row) => row.id !== id));
+      toast.success(`${title} position deleted successfully`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: `${theme == "dark" ? "dark" : "light"}`,
+        transition: Bounce,
+      });
     } catch (error) {
       console.error("Error deleting job position:", error);
       alert("Error deleting job position. Please try again.");
@@ -288,7 +325,7 @@ export default function JobPositions({
                           <>
                             <button
                               className="delete"
-                              onClick={() => handleDelete(row.id)}
+                              onClick={() => handleDelete(row.id, row.title)}
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"

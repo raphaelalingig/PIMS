@@ -9,10 +9,26 @@ import AuthenticatedDashboard from "./pages/GetStarted/Authenticated/Authenticat
 import { AuthProvider } from "./context/AuthContext";
 import AuthenticatedRoute from "./components/CheckifAuthenticated/AuthenticatedRoute";
 import PayrollContent from "./pages/GetStarted/Authenticated/PayrollNameContent/PayrollContent";
+import { ToastContainer } from 'react-toastify'; // Import ToastContainer
+import 'react-toastify/dist/ReactToastify.css'; // Import CSS for toast notifications
+
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <ToastContainer // Add ToastContainer here
+          position="bottom-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+          transition="Bounce" // Corrected syntax for transition
+        />
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
