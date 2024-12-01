@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import Chart from "chart.js/auto";
 
-const PieChart = ({}) => {
+const PieChart = ({ payrollEmployees }) => {
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
 
@@ -10,6 +10,28 @@ const PieChart = ({}) => {
     if (chartInstance.current) {
       chartInstance.current.destroy();
     }
+
+    // Calculate payment status totals
+    const paymentStatusTotals = {
+      paid: 0,
+      pending: 0,
+      onHold: 0,
+    };
+
+    // Count employees in each payment status
+    payrollEmployees.forEach((employee) => {
+      switch (employee.payment_status) {
+        case 1:
+          paymentStatusTotals.paid++;
+          break;
+        case 2:
+          paymentStatusTotals.pending++;
+          break;
+        case 3:
+          paymentStatusTotals.onHold++;
+          break;
+      }
+    });
 
     // Get the canvas element
     const ctx = chartRef.current.getContext("2d");
@@ -22,9 +44,9 @@ const PieChart = ({}) => {
         datasets: [
           {
             data: [
-              //   paymentStatusTotals.paid,
-              //   paymentStatusTotals.pending,
-              //   paymentStatusTotals.onHold,
+              paymentStatusTotals.paid,
+              paymentStatusTotals.pending,
+              paymentStatusTotals.onHold,
             ],
             backgroundColor: [
               "#4CAF50", // Green for Paid
@@ -48,6 +70,16 @@ const PieChart = ({}) => {
               size: 16,
             },
           },
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                const value = context.parsed;
+                const percentage = ((value / total) * 100).toFixed(1);
+                return `${context.label}: ${value} (${percentage}%)`;
+              },
+            },
+          },
         },
       },
     });
@@ -58,7 +90,7 @@ const PieChart = ({}) => {
         chartInstance.current.destroy();
       }
     };
-  }, []); // Recreate chart when data changes
+  }, [payrollEmployees]); // Recreate chart when data changes
 
   return (
     <div className="bg-white dark:bg-gray-700 border dark:border-white p-4 rounded-lg shadow h-72">

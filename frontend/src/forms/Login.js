@@ -30,7 +30,7 @@ export default function Login() {
   return (
     <>
       <Navbar />
-      <div className="animate__animated animate__fadeIn min-h-screen shadow-xl flex items-center justify-center px-4 py-10 sm:px-6 lg:px-8 bg-gray-100 dark:bg-gray-800">
+      <div className=" min-h-screen shadow-xl flex items-center justify-center px-4 py-10 sm:px-6 lg:px-8 bg-gray-100 dark:bg-gray-800">
         <div className="max-w-7xl w-full bg-white shadow-xl rounded-lg flex flex-col md:flex-row">
           {/* Left: Image */}
           <div className="hidden md:flex md:w-full bg-gray-300 rounded-l-lg overflow-hidden">
@@ -41,7 +41,7 @@ export default function Login() {
             />
           </div>
           {/* Right: Login Form */}
-          <div className="flex flex-col shadow-xl justify-center items-center md:w-1/2 p-8 sm:p-12">
+          <div className="animate__animated animate__fadeIn flex flex-col shadow-xl justify-center items-center md:w-1/2 p-8 sm:p-12">
             <div className="w-full">
               <h2 className="text-center text-xl font-extrabold text-gray-900 mb-2">
                 Welcome to Payroll Information Management System

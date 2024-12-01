@@ -257,11 +257,13 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="bg-[#F4F6FA] dark:bg-gray-900 min-h-screen animate__animated animate__fadeIn">
+    <div className="bg-[#F4F6FA] dark:bg-gray-900 min-h-screen ">
       <Navbar />
 
       <main className="px-28 py-6">
-        <DashboardReports dashboardMetrics={dashboardMetrics} />
+        <div className="animate__animated animate__fadeIn">
+          <DashboardReports dashboardMetrics={dashboardMetrics} />
+        </div>
         <div class="mt-4">
           <div class="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
             <div>
