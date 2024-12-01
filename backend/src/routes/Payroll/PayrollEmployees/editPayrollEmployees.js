@@ -21,6 +21,8 @@ router.put("/", async (req, res) => {
       deduction_reason,
       deductions_amount,
       total_pay,
+      salary_date,
+      job_position_id,
     } = req.body;
 
     // Validate required employee_id
@@ -59,7 +61,9 @@ router.put("/", async (req, res) => {
         deductions_status = ?,
         deduction_reason = ?,
         deductions_amount = ?,
-        total_pay = ?
+        total_pay = ?,
+        salary_date= ?,
+        job_position_id =?
       WHERE employee_id = ?
     `;
 
@@ -91,7 +95,9 @@ router.put("/", async (req, res) => {
         ? deductions_amount
         : existingEmployee[0].deductions_amount,
       total_pay !== undefined ? total_pay : existingEmployee[0].total_pay,
-      employee_id,
+      salary_date || existingEmployee[0].salary_date,
+      job_position_id || existingEmployee[0].job_position_id,
+      employee_id, // Moved to the end to match WHERE clause
     ];
 
     await db.query(updateQuery, values);

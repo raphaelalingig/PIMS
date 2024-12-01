@@ -21,6 +21,8 @@ router.post("/", async (req, res) => {
       deduction_reason,
       deductions_amount,
       total_pay,
+      salary_date,
+      job_position_id,
     } = req.body;
 
     // Validate required fields
@@ -31,7 +33,8 @@ router.post("/", async (req, res) => {
       !mobile_number ||
       !basic_pay ||
       !salary_type ||
-      !payment_status
+      !payment_status ||
+      !job_position_id
     ) {
       return res.status(400).json({
         success: false,
@@ -55,8 +58,10 @@ router.post("/", async (req, res) => {
                 deductions_status,
                 deduction_reason,
                 deductions_amount,
-                total_pay
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                total_pay,
+                salary_date,
+                job_position_id 
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
         `;
 
     const values = [
@@ -75,6 +80,8 @@ router.post("/", async (req, res) => {
       deduction_reason || null,
       deductions_amount || 0,
       total_pay,
+      salary_date,
+      job_position_id,
     ];
 
     const [result] = await db.query(query, values);

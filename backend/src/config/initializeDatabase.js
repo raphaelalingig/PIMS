@@ -64,7 +64,10 @@ export async function initializeDatabase() {
                 deduction_reason VARCHAR(255),
                 deductions_amount DECIMAL(10, 2),
                 total_pay DECIMAL(10, 2),
-                created_date DATETIME DEFAULT CURRENT_TIMESTAMP
+                salary_date DATE,
+                created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+                job_position_id INT,
+                FOREIGN KEY (job_position_id) REFERENCES JobPositions(job_position_id)
       )`,
     ];
 

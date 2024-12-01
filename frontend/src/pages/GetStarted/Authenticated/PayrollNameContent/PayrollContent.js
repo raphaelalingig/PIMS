@@ -5,37 +5,116 @@ import BoxReports from "./Reports/BoxReports";
 import AddJobPositions from "./Actions/JobPositions";
 import AddEmployee from "./Actions/AddEmployee";
 import api_url from "../../../../components/api_url";
+import EditEmployee from "./Actions/EditEmployee";
 
 export default function PayrollContent() {
   const { id, name } = useParams();
 
   const [isJobPositionModalOpen, setIsJobPositionModalOpen] = useState(false);
+  const [isEditEmployeeModalOpen, setIsEditEmployeeModalOpen] = useState(false);
 
   const [isAddEmployeeModalOpen, setIsAddEmployeeModalOpen] = useState(false);
   const [isLoading, setisLoading] = useState(false);
   const [filteredEmployees, setFilteredEmployees] = useState([]);
   const [payrollEmployees, setPayrollEmployees] = useState([]);
+  const [editEmployeeDetails, setEditEmployeeDetails] = useState({
+    employee_id: 0,
+    employee_name: "",
+    job_position: "",
+    mobile_number: 0,
+    basic_pay: 0,
+    salary_date: "",
+    payment_status: 0,
+    salary_type: 0,
+    total_pay: 0,
+    overtime_status: 0,
+    nightDifferential_status: 0,
+    deductions_status: 0,
+    overtime_hours: 0,
+    nightDifferential_hours: 0,
+    deductions_amount: 0,
+    deduction_reason: "",
+    job_position_id: 0,
+  });
 
   console.log("ID: ", id);
   console.log("Name: ", name);
 
   useEffect(() => {
-    const fetchPayrollEMployees = async () => {
-      try {
-        const response = await api_url.post("/show-payroll-employees", {
-          payroll_list_id: id,
-        });
-
-        if (response && response.status === 200) {
-          console.log("Payroll employees:", response.data.data);
-          setPayrollEmployees(response.data.data);
-        }
-      } catch (error) {}
-    };
-
     fetchPayrollEMployees();
   }, [id]);
 
+  const fetchPayrollEMployees = async () => {
+    try {
+      const response = await api_url.post("/show-payroll-employees", {
+        payroll_list_id: id,
+      });
+
+      if (response && response.status === 200) {
+        console.log("Payroll employees:", response.data.data);
+        setPayrollEmployees(response.data.data);
+      }
+    } catch (error) {}
+  };
+
+  const handleEditEmployee = (
+    employee_id,
+    employee_name,
+    job_position,
+    mobile_number,
+    basic_pay,
+    salary_date,
+    payment_status,
+    salary_type,
+    total_pay,
+    overtime_status,
+    nightDifferential_status,
+    deductions_status,
+    overtime_hours,
+    nightDifferential_hours,
+    deductions_amount,
+    deduction_reason,
+    job_position_id
+  ) => {
+    setIsEditEmployeeModalOpen(true);
+    setEditEmployeeDetails({
+      employee_id: employee_id,
+      employee_name: employee_name,
+      job_position: job_position,
+      mobile_number: mobile_number,
+      basic_pay: basic_pay,
+      salary_date: salary_date,
+      payment_status: payment_status,
+      salary_type: salary_type,
+      total_pay: total_pay,
+      overtime_status: overtime_status,
+      nightDifferential_status: nightDifferential_status,
+      deductions_status: deductions_status,
+      overtime_hours: overtime_hours,
+      nightDifferential_hours: nightDifferential_hours,
+      deductions_amount: deductions_amount,
+      deduction_reason: deduction_reason,
+      job_position_id: job_position_id,
+    });
+  };
+
+  const handleDeleteEmployee = async (employee_id, payroll_list_id) => {
+    console.log("Employee ID:", employee_id);
+    console.log("Payroll List ID:", payroll_list_id);
+
+    try {
+      const response = await api_url.post("/delete-payroll-employee", {
+        employee_id: employee_id,
+        payroll_list_id: payroll_list_id,
+      });
+
+      if (response.status === 200) {
+        fetchPayrollEMployees();
+      }
+    } catch (error) {
+      console.log("Error in deleting employee:", error);
+    }
+  };
   return (
     <div className="bg-[#F4F6FA] dark:bg-gray-900 min-h-screen animate__animated animate__fadeIn">
       <Navbar />
@@ -127,6 +206,7 @@ export default function PayrollContent() {
                 setIsAddEmployeeModalOpen={setIsAddEmployeeModalOpen}
                 isJobPositionModalOpen={isJobPositionModalOpen}
                 setIsJobPositionModalOpen={setIsJobPositionModalOpen}
+                fetchPayrollEMployees={fetchPayrollEMployees}
               />
             )}
           </div>
@@ -258,7 +338,6 @@ export default function PayrollContent() {
                         <>
                           {formattedDate}
                           <br />
-                          {formattedTime}
                         </>
                       );
                     } catch (error) {
@@ -267,19 +346,19 @@ export default function PayrollContent() {
                     }
                   };
 
-                  // const additionalPayments = [
-                  //   employee.overtime.enabled
-                  //     ? `Overtime: ${employee.overtime.hours} hrs`
-                  //     : null,
-                  //   employee.nightDifferential.enabled
-                  //     ? `Night Differential: ${employee.nightDifferential.hours} hrs`
-                  //     : null,
-                  //   employee.deductions.enabled
-                  //     ? `Deductions: ₱-${employee.deductions.amount} (${employee.deductions.reasons})`
-                  //     : null,
-                  // ]
-                  //   .filter(Boolean)
-                  //   .join("\n");
+                  const additionalPayments = [
+                    employee.overtime_status
+                      ? `Overtime: ${employee.overtime_hours} hrs`
+                      : null,
+                    employee.nightDifferential_status
+                      ? `Night Differential: ${employee.nightDifferential_hours} hrs`
+                      : null,
+                    employee.deductions_status
+                      ? `Deductions: ₱-${employee.deductions_amount} (${employee.deduction_reason})`
+                      : null,
+                  ]
+                    .filter(Boolean)
+                    .join("\n");
 
                   return (
                     <tr
@@ -299,10 +378,10 @@ export default function PayrollContent() {
                         {employee.mobile_number}
                       </td>
                       <td className="px-6 py-4 border-r border-black dark:border-white whitespace-nowrap">
-                        ₱ {employee.basicPay}
+                        ₱ {employee.basic_pay}
                       </td>
                       <td className="px-6 py-4 border-r border-black dark:border-white">
-                        {formatDate(employee.salaryDate)}
+                        {formatDate(employee.salary_date)}
                       </td>
                       <td className="px-6 py-4 border-r border-black dark:border-white">
                         <div
@@ -332,36 +411,37 @@ export default function PayrollContent() {
                         </div>
                       </td>
                       <td className="px-6 py-4 border-r border-black dark:border-white">
-                        {/* {additionalPayments || "None"} */}
+                        {additionalPayments || "None"}
                       </td>
-                      <td className="px-6 py-4 border-r border-black dark:border-white">
-                        {/* {employee.salary} */}
+                      <td className="px-6 py-4 border-r border-black dark:border-white whitespace-nowrap">
+                        ₱ {employee.total_pay}
                       </td>
 
                       <td className="px-6 py-4 border-r border-black dark:border-white">
                         <div className="flex">
                           <div
                             className="editIcon mr-2"
-                            // onClick={() =>
-                            //   handleEditEmployee(
-                            //     employee.id,
-                            //     employee.name,
-                            //     employee.position,
-                            //     employee.mobileNumber,
-                            //     employee.basicPay,
-                            //     employee.salaryDate,
-                            //     employee.paymentStatus,
-                            //     employee.salaryType,
-                            //     employee.salary,
-                            //     employee.overtime.enabled,
-                            //     employee.nightDifferential.enabled,
-                            //     employee.deductions.enabled,
-                            //     employee.overtime.hours,
-                            //     employee.nightDifferential.hours,
-                            //     employee.deductions.amount,
-                            //     employee.deductions.reasons
-                            //   )
-                            // }
+                            onClick={() =>
+                              handleEditEmployee(
+                                employee.employee_id,
+                                employee.employee_name,
+                                employee.job_position,
+                                employee.mobile_number,
+                                employee.basic_pay,
+                                employee.salary_date,
+                                employee.payment_status,
+                                employee.salary_type,
+                                employee.total_pay,
+                                employee.overtime_status,
+                                employee.nightDifferential_status,
+                                employee.deductions_status,
+                                employee.overtime_hours,
+                                employee.nightDifferential_hours,
+                                employee.deductions_amount,
+                                employee.deduction_reason,
+                                employee.job_position_id
+                              )
+                            }
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -378,7 +458,7 @@ export default function PayrollContent() {
                               />
                             </svg>
                           </div>
-                          {/* {isEditEmployeeModalOpen && (
+                          {isEditEmployeeModalOpen && (
                             <EditEmployee
                               isEditEmployeeModalOpen={isEditEmployeeModalOpen}
                               setIsEditEmployeeModalOpen={
@@ -386,15 +466,22 @@ export default function PayrollContent() {
                               }
                               editEmployeeDetails={editEmployeeDetails}
                               setEditEmployeeDetails={setEditEmployeeDetails}
-                              fetchData={fetchData}
+                              fetchPayrollEMployees={fetchPayrollEMployees}
+                              isJobPositionModalOpen={isJobPositionModalOpen}
+                              setIsJobPositionModalOpen={
+                                setIsJobPositionModalOpen
+                              }
                             />
-                          )} */}
+                          )}
 
                           <div
                             className="deleteIcon"
-                            // onClick={() =>
-                            //   handleDeleteEmployee(employee.id, employee.name)
-                            // }
+                            onClick={() =>
+                              handleDeleteEmployee(
+                                employee.employee_id,
+                                employee.payroll_list_id
+                              )
+                            }
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"

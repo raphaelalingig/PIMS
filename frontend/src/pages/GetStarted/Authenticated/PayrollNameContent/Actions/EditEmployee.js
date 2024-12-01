@@ -5,36 +5,21 @@ import Swal from "sweetalert2";
 import api_url from "../../../../../components/api_url";
 import { useParams } from "react-router-dom";
 
-export default function AddEmployee({
-  setIsAddEmployeeModalOpen,
-  isAddEmployeeModalOpen,
-  fetchData,
+export default function EditEmployee({
+  fetchPayrollEMployees,
+  isEditEmployeeModalOpen,
+  setIsEditEmployeeModalOpen,
+  editEmployeeDetails,
+  setEditEmployeeDetails,
   isJobPositionModalOpen,
   setIsJobPositionModalOpen,
-  fetchPayrollEMployees,
 }) {
-  const [name, setName] = useState("");
-  const [position, setPosition] = useState("");
-  const [mobileNumber, setMobileNumber] = useState(0);
-  const [basicPay, setBasicPay] = useState(0);
-  const [salaryType, setSalaryType] = useState(0);
-
-  const [salary, setSalary] = useState(0);
-  const [paymentStatus, setPaymentStatus] = useState("0");
-  const [isNighDifferential, setIsNighDifferential] = useState(false);
-  const [isOvertime, setIsOvertime] = useState(false);
-  const [isDeductions, setIsDeductions] = useState(false);
-  const [overtimeHours, setOvertimeHours] = useState(0);
-  const [nightDifferentialHours, setNightDifferentialHours] = useState(0);
-  const [deductionsReasons, setDeductionsReasons] = useState("");
-  const [deductionsAmount, setDeductionsAmount] = useState(0);
-
-  const [salaryDate, setSalaryDate] = useState(new Date());
   const [jobPositions, setJobPositions] = useState([]);
-  const [job_position_id, setJobPositionId] = useState(0);
 
   const { id, payrollName } = useParams();
   console.log("ID from add employee: ", id);
+
+  console.log("Edit employee details: ", editEmployeeDetails);
 
   useEffect(() => {
     const fetchJobPositions = async () => {
@@ -57,30 +42,32 @@ export default function AddEmployee({
   useEffect(() => {
     let newDate = new Date();
 
-    if (salaryType === 1) {
+    if (editEmployeeDetails.salary_type === 1) {
       newDate.setHours(newDate.getHours() + 8);
-    } else if (salaryType === 2) {
+    } else if (editEmployeeDetails.salary_type === 2) {
       newDate.setDate(newDate.getDate() + 15);
-    } else if (salaryType === 3) {
+    } else if (editEmployeeDetails.salary_type === 3) {
       newDate.setDate(newDate.getDate() + 30);
     }
 
-    setSalaryDate(newDate);
-  }, [salaryType]);
+    setEditEmployeeDetails((prevDetails) => ({
+      ...prevDetails,
+      salary_date: newDate,
+    }));
+  }, [editEmployeeDetails.salary_type]);
 
-  const calculateSalary = ({
+  const calculateUpdatedSalary = ({
     basicPay,
     salaryType,
     isOvertime,
     overtimeHours,
-    isNighDifferential,
-    nightDifferentialHours,
-    isDeductions,
+    isNightDiff,
+    nightDiffHours,
+    hasDeductions,
     deductionsAmount,
   }) => {
-    // Initialize base salary based on salary type
     let totalSalary = 0;
-    const hourlyRate = basicPay / 8; // Daily rate divided by 8 hours
+    const hourlyRate = basicPay / 8;
 
     // Calculate base salary based on salary type
     switch (salaryType) {
@@ -97,22 +84,20 @@ export default function AddEmployee({
         totalSalary = 0;
     }
 
-    // Calculate overtime if enabled
+    // Add overtime pay if applicable
     if (isOvertime && overtimeHours > 0) {
       const overtimePay = hourlyRate * 1.5 * overtimeHours;
       totalSalary += overtimePay;
     }
 
-    // Calculate night differential if enabled
-    if (isNighDifferential && nightDifferentialHours > 0) {
-      // Night differential is 110% of hourly rate
-      const nightDiffRate = hourlyRate * 1.1;
-      const nightDiffPay = nightDiffRate * nightDifferentialHours;
+    // Add night differential if applicable
+    if (isNightDiff && nightDiffHours > 0) {
+      const nightDiffPay = hourlyRate * 1.1 * nightDiffHours;
       totalSalary += nightDiffPay;
     }
 
-    // Apply deductions if enabled
-    if (isDeductions && deductionsAmount > 0) {
+    // Subtract deductions if applicable
+    if (hasDeductions && deductionsAmount > 0) {
       totalSalary -= deductionsAmount;
     }
 
@@ -120,98 +105,106 @@ export default function AddEmployee({
   };
 
   useEffect(() => {
-    const newSalary = calculateSalary({
-      basicPay: Number(basicPay),
-      salaryType,
-      isOvertime,
-      overtimeHours: Number(overtimeHours),
-      isNighDifferential,
-      nightDifferentialHours: Number(nightDifferentialHours),
-      isDeductions,
-      deductionsAmount: Number(deductionsAmount),
+    const updatedTotalPay = calculateUpdatedSalary({
+      basicPay: Number(editEmployeeDetails.basic_pay),
+      salaryType: Number(editEmployeeDetails.salary_type),
+      isOvertime: Boolean(editEmployeeDetails.overtime_status),
+      overtimeHours: Number(editEmployeeDetails.overtime_hours),
+      isNightDiff: Boolean(editEmployeeDetails.nightDifferential_status),
+      nightDiffHours: Number(editEmployeeDetails.nightDifferential_hours),
+      hasDeductions: Boolean(editEmployeeDetails.deductions_status),
+      deductionsAmount: Number(editEmployeeDetails.deductions_amount),
     });
 
-    setSalary(newSalary);
+    setEditEmployeeDetails((prev) => ({
+      ...prev,
+      total_pay: updatedTotalPay,
+    }));
   }, [
-    basicPay,
-    salaryType,
-    isOvertime,
-    overtimeHours,
-    isNighDifferential,
-    nightDifferentialHours,
-    isDeductions,
-    deductionsAmount,
+    editEmployeeDetails.basic_pay,
+    editEmployeeDetails.salary_type,
+    editEmployeeDetails.overtime_status,
+    editEmployeeDetails.overtime_hours,
+    editEmployeeDetails.nightDifferential_status,
+    editEmployeeDetails.nightDifferential_hours,
+    editEmployeeDetails.deductions_status,
+    editEmployeeDetails.deductions_amount,
   ]);
 
-  const handleAddEmployee = async (e) => {
+  const handleUpdateEmployee = async (e) => {
     e.preventDefault();
 
-    // Validate required fields
-    if (
-      !name ||
-      !position ||
-      !mobileNumber ||
-      !basicPay ||
-      !salaryType ||
-      !paymentStatus
-    ) {
-      alert("Please fill in all required fields");
-      return;
-    }
-
-    // Prepare the request payload using the existing calculated salary
-    const payload = {
-      payroll_list_id: id, // Adjust as needed
-      employee_name: name,
-      job_position: position,
-      mobile_number: mobileNumber,
-      basic_pay: parseFloat(basicPay),
-      salary_type: parseInt(salaryType),
-      payment_status: parseInt(paymentStatus),
-      overtime_status: isOvertime ? 1 : 0,
-      overtime_hours: isOvertime ? parseFloat(overtimeHours) : 0,
-      nightDifferential_status: isNighDifferential ? 1 : 0,
-      nightDifferential_hours: isNighDifferential
-        ? parseFloat(nightDifferentialHours)
-        : 0,
-      deductions_status: isDeductions ? 1 : 0,
-      deduction_reason: isDeductions ? deductionsReasons : null,
-      deductions_amount: isDeductions ? parseFloat(deductionsAmount) : 0,
-      total_pay: parseFloat(salary), // Using the calculated salary from state
-      salary_date: salaryDate,
-      job_position_id: job_position_id,
-    };
-
     try {
+      // Prepare the data for API submission
+      const employeeData = {
+        employee_id: editEmployeeDetails.employee_id,
+        payroll_list_id: editEmployeeDetails.payroll_list_id,
+        employee_name: editEmployeeDetails.employee_name,
+        job_position: editEmployeeDetails.job_position,
+        mobile_number: editEmployeeDetails.mobile_number,
+        basic_pay: Number(editEmployeeDetails.basic_pay),
+        salary_type: Number(editEmployeeDetails.salary_type),
+        payment_status: Number(editEmployeeDetails.payment_status),
+        overtime_status: editEmployeeDetails.overtime_status ? 1 : 0,
+        overtime_hours: editEmployeeDetails.overtime_status
+          ? Number(editEmployeeDetails.overtime_hours)
+          : 0,
+        nightDifferential_status: editEmployeeDetails.nightDifferential_status
+          ? 1
+          : 0,
+        nightDifferential_hours: editEmployeeDetails.nightDifferential_status
+          ? Number(editEmployeeDetails.nightDifferential_hours)
+          : 0,
+        deductions_status: editEmployeeDetails.deductions_status ? 1 : 0,
+        deduction_reason: editEmployeeDetails.deductions_status
+          ? editEmployeeDetails.deduction_reason
+          : "",
+        deductions_amount: editEmployeeDetails.deductions_status
+          ? Number(editEmployeeDetails.deductions_amount)
+          : 0,
+        total_pay: editEmployeeDetails.total_pay,
+        salary_date:
+          editEmployeeDetails.salary_date instanceof Date
+            ? editEmployeeDetails.salary_date.toISOString().split("T")[0]
+            : editEmployeeDetails.salary_date,
+        job_position_id: Number(editEmployeeDetails.job_position_id),
+      };
+
+      // Make the API call
       const response = await fetch(
-        "http://localhost:5000/api/add-payroll-employees",
+        "http://localhost:5000/api/edit-payroll-employee",
         {
-          method: "POST",
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(payload),
+          body: JSON.stringify(employeeData),
         }
       );
 
       const data = await response.json();
 
       if (data.success) {
-        alert("Employee added successfully!");
-        setIsAddEmployeeModalOpen(false); // Close the modal
+        // Show success message
+        alert("Employee updated successfully");
 
-        fetchPayrollEMployees();
+        // Close the modal
+        setIsEditEmployeeModalOpen(false);
+
+        // Refresh the employee list (assuming you have a function for this)
+        fetchPayrollEMployees(); // You'll need to implement this function to refresh the list
       } else {
-        alert(`Failed to add employee: ${data.message}`);
+        // Show error message
+        alert(data.message || "Failed to update employee");
       }
     } catch (error) {
-      console.error("Error adding employee:", error);
-      alert("Failed to add employee. Please try again.");
+      console.error("Error updating employee:", error);
+      alert("An error occurred while updating the employee");
     }
   };
 
   const handleClickAddJobPosition = () => {
-    setIsAddEmployeeModalOpen(false);
+    setIsEditEmployeeModalOpen(false);
     setIsJobPositionModalOpen(true);
   };
   return (
@@ -229,13 +222,13 @@ export default function AddEmployee({
           <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
             <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
               <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                Add Employee
+                Edit Employee
               </h3>
               <button
                 type="button"
                 class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
                 data-modal-toggle="crud-modal"
-                onClick={() => setIsAddEmployeeModalOpen(false)}
+                onClick={() => setIsEditEmployeeModalOpen(false)}
               >
                 <svg
                   class="w-3 h-3"
@@ -255,7 +248,7 @@ export default function AddEmployee({
                 <span class="sr-only">Close modal</span>
               </button>
             </div>
-            <form class="p-4 md:p-5" onSubmit={handleAddEmployee}>
+            <form class="p-4 md:p-5" onSubmit={handleUpdateEmployee}>
               <div className="grid gap-4 mb-4 sm:grid-cols-3 border-b pb-4">
                 <div>
                   {/* class="col-span-2" */}
@@ -269,7 +262,13 @@ export default function AddEmployee({
                     type="text"
                     name="name"
                     id="name"
-                    onChange={(e) => setName(e.target.value)}
+                    value={editEmployeeDetails.employee_name}
+                    onChange={(e) =>
+                      setEditEmployeeDetails({
+                        ...editEmployeeDetails,
+                        employee_name: e.target.value,
+                      })
+                    }
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                     placeholder="Type employee name"
                     required
@@ -298,14 +297,18 @@ export default function AddEmployee({
                           job.job_position_id === parseInt(e.target.value)
                       );
                       if (selectedJob) {
-                        setBasicPay(selectedJob.salary);
-                        setPosition(selectedJob.title);
-                        setJobPositionId(selectedJob.job_position_id);
+                        setEditEmployeeDetails({
+                          ...editEmployeeDetails,
+                          job_position_id: selectedJob.job_position_id, // Update job_position_id
+                          job_position: selectedJob.title, // Update job_position title
+                          basic_pay: selectedJob.salary, // Update basic_pay
+                        });
                       }
                     }}
+                    value={editEmployeeDetails.job_position_id} // Ensure this reflects the correct state
                     required
                   >
-                    <option value="" disabled selected>
+                    <option value="" disabled>
                       Select Job Position
                     </option>
                     {jobPositions.map((job) => (
@@ -329,7 +332,13 @@ export default function AddEmployee({
                     type="number"
                     name="Mobile Number"
                     id="Mobile Number"
-                    onChange={(e) => setMobileNumber(e.target.value)}
+                    value={editEmployeeDetails.mobile_number}
+                    onChange={(e) =>
+                      setEditEmployeeDetails({
+                        ...editEmployeeDetails,
+                        mobile_number: e.target.value,
+                      })
+                    }
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                     placeholder="Enter 11 digit mobile number"
                     required
@@ -346,7 +355,13 @@ export default function AddEmployee({
                     type="number"
                     name="basicPay"
                     id="basicPay"
-                    value={basicPay}
+                    value={editEmployeeDetails.basic_pay}
+                    onChange={(e) =>
+                      setEditEmployeeDetails({
+                        ...editEmployeeDetails,
+                        basic_pay: e.target.value,
+                      })
+                    }
                     disabled
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                     required=""
@@ -362,7 +377,13 @@ export default function AddEmployee({
                   <select
                     id="salaryType"
                     name="salaryType"
-                    onChange={(e) => setSalaryType(Number(e.target.value))}
+                    value={editEmployeeDetails.salary_type}
+                    onChange={(e) =>
+                      setEditEmployeeDetails({
+                        ...editEmployeeDetails,
+                        salary_type: e.target.value,
+                      })
+                    }
                     required
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   >
@@ -384,7 +405,13 @@ export default function AddEmployee({
                   </label>
                   <select
                     id="Payment Status"
-                    onChange={(e) => setPaymentStatus(e.target.value)}
+                    value={editEmployeeDetails.payment_status}
+                    onChange={(e) =>
+                      setEditEmployeeDetails({
+                        ...editEmployeeDetails,
+                        payment_status: e.target.value,
+                      })
+                    }
                     required
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   >
@@ -405,8 +432,13 @@ export default function AddEmployee({
                     Salary Date
                   </label>
                   <DatePicker
-                    selected={salaryDate}
-                    onChange={(date) => setSalaryDate(date)}
+                    selected={editEmployeeDetails.salary_date}
+                    onChange={(date) => {
+                      setEditEmployeeDetails({
+                        ...editEmployeeDetails,
+                        salary_date: date,
+                      });
+                    }}
                     dateFormat="P"
                     customInput={
                       <input
@@ -419,29 +451,19 @@ export default function AddEmployee({
                     }
                   />
                 </div>
-
-                {/* <div class="col-span-2">
-                  <label
-                    for="description"
-                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Product Description
-                  </label>
-                  <textarea
-                    id="description"
-                    rows="4"
-                    class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Write product description here"
-                  ></textarea>
-                </div> */}
               </div>
               <div className="grid gap-4 mb-4 sm:grid-cols-3 border-b pb-4">
                 <div class="flex items-center">
                   <input
                     id="overtime-checkbox"
                     type="checkbox"
-                    checked={isOvertime}
-                    onChange={(e) => setIsOvertime(e.target.checked)}
+                    checked={editEmployeeDetails.overtime_status}
+                    onChange={(e) =>
+                      setEditEmployeeDetails({
+                        ...editEmployeeDetails,
+                        overtime_status: e.target.checked,
+                      })
+                    }
                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                   />
                   <label
@@ -455,8 +477,13 @@ export default function AddEmployee({
                   <input
                     id="nightdifferential-checkbox"
                     type="checkbox"
-                    checked={isNighDifferential}
-                    onChange={(e) => setIsNighDifferential(e.target.checked)}
+                    checked={editEmployeeDetails.nightDifferential_status}
+                    onChange={(e) =>
+                      setEditEmployeeDetails({
+                        ...editEmployeeDetails,
+                        nightDifferential_status: e.target.checked,
+                      })
+                    }
                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                   />
                   <label
@@ -471,8 +498,13 @@ export default function AddEmployee({
                   <input
                     id="deductions-checkbox"
                     type="checkbox"
-                    checked={isDeductions}
-                    onChange={(e) => setIsDeductions(e.target.checked)}
+                    checked={editEmployeeDetails.deductions_status}
+                    onChange={(e) =>
+                      setEditEmployeeDetails({
+                        ...editEmployeeDetails,
+                        deductions_status: e.target.checked,
+                      })
+                    }
                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                   />
                   <label
@@ -485,12 +517,14 @@ export default function AddEmployee({
               </div>
               <div
                 className={`grid gap-4 mb-4 sm:grid-cols-3 pb-4 ${
-                  isNighDifferential || isOvertime || isDeductions
+                  editEmployeeDetails.nightDifferential_status ||
+                  editEmployeeDetails.overtime_status ||
+                  editEmployeeDetails.deductions_status
                     ? "border-b"
                     : ""
                 }`}
               >
-                {isOvertime && (
+                {editEmployeeDetails.overtime_status && (
                   <div>
                     <label
                       for="overtime"
@@ -512,14 +546,20 @@ export default function AddEmployee({
                           type="number"
                           name="overtimeNumberofHours"
                           id="overtimeNumberofHours"
-                          onChange={(e) => setOvertimeHours(e.target.value)}
+                          value={editEmployeeDetails.overtime_hours}
+                          onChange={(e) =>
+                            setEditEmployeeDetails({
+                              ...editEmployeeDetails,
+                              overtime_hours: e.target.value,
+                            })
+                          }
                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                         />
                       </div>
                     </div>
                   </div>
                 )}
-                {isNighDifferential && (
+                {editEmployeeDetails.nightDifferential_status && (
                   <div>
                     <label
                       for="differentialrate"
@@ -544,8 +584,12 @@ export default function AddEmployee({
                           type="number"
                           name="nightDifferentialNumberofHours"
                           id="nightDifferentialNumberofHours"
+                          value={editEmployeeDetails.nightDifferential_hours}
                           onChange={(e) =>
-                            setNightDifferentialHours(e.target.value)
+                            setEditEmployeeDetails({
+                              ...editEmployeeDetails,
+                              nightDifferential_hours: e.target.value,
+                            })
                           }
                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                         />
@@ -553,7 +597,7 @@ export default function AddEmployee({
                     </div>
                   </div>
                 )}
-                {isDeductions && (
+                {editEmployeeDetails.deductions_status && (
                   <div>
                     <label
                       for="deductions"
@@ -575,7 +619,13 @@ export default function AddEmployee({
                           type="text"
                           name="setDeductionsReasons"
                           id="setDeductionsReasons"
-                          onChange={(e) => setDeductionsReasons(e.target.value)}
+                          value={editEmployeeDetails.deduction_reason}
+                          onChange={(e) =>
+                            setEditEmployeeDetails({
+                              ...editEmployeeDetails,
+                              deduction_reason: e.target.value,
+                            })
+                          }
                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                         />
                       </div>
@@ -591,7 +641,13 @@ export default function AddEmployee({
                           type="number"
                           name="deductionRate"
                           id="deductionRate"
-                          onChange={(e) => setDeductionsAmount(e.target.value)}
+                          value={editEmployeeDetails.deductions_amount}
+                          onChange={(e) =>
+                            setEditEmployeeDetails({
+                              ...editEmployeeDetails,
+                              deductions_amount: e.target.value,
+                            })
+                          }
                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                         />
                       </div>
@@ -613,8 +669,13 @@ export default function AddEmployee({
                     type="number"
                     name="salary"
                     id="Salary"
-                    value={salary}
-                    onChange={(e) => setSalary(e.target.value)}
+                    value={editEmployeeDetails.total_pay}
+                    onChange={(e) =>
+                      setEditEmployeeDetails({
+                        ...editEmployeeDetails,
+                        total_pay: e.target.value,
+                      })
+                    }
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   />
                 </div>
@@ -622,7 +683,7 @@ export default function AddEmployee({
 
               <div className="flex justify-end mt-4 gap-2">
                 <button
-                  onClick={() => setIsAddEmployeeModalOpen(false)}
+                  onClick={() => setIsEditEmployeeModalOpen(false)}
                   class="text-white inline-flex items-center bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-2.5 py-1.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
                 >
                   Cancel
@@ -645,7 +706,7 @@ export default function AddEmployee({
                       d="m4.5 12.75 6 6 9-13.5"
                     />
                   </svg>
-                  Save
+                  Update
                 </button>
               </div>
             </form>
