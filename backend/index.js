@@ -27,7 +27,12 @@ const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "payrollmanagementsystem.up.railway.app"],
+    origin: [
+      "http://localhost:3000",
+      "payrollmanagementsystem.up.railway.app",
+      "https://payrollmanagementsystem.up.railway.app",
+      "payrollmanagementsystem.up.railway.app:8080",
+    ],
 
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
