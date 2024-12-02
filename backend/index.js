@@ -1,22 +1,22 @@
 import express from "express";
 import pkg from "body-parser";
 import { config } from "dotenv";
-import registerUserRouter from "./routes/Users/registerUser.js";
-import loginUserRouter from "./routes/Users/loginUser.js";
-import addPayrollListsRouter from "./routes/Payroll/createPayroll.js";
-import payrollListsRouter from "./routes/Payroll/payrollLists.js";
-import deletePayrollRouter from "./routes/Payroll/deletePayroll.js";
-import editPayrollRouter from "./routes/Payroll/editPayroll.js";
-import getPayrollContentRouter from "./routes/Payroll/PayrollContentOnly.js";
-import showJobPositions from "./routes/Payroll/JobPosition/showJobPositions.js";
-import addJobpPositionRouter from "./routes/Payroll/JobPosition/addJobPosition.js";
-import deleteJobPositionRouter from "./routes/Payroll/JobPosition/deleteJobPositions.js";
-import editJobPositionRouter from "./routes/Payroll/JobPosition/editJobPosition.js";
-import addPayrollEmployeesRouter from "./routes/Payroll/PayrollEmployees/addPayrollEmployees.js";
-import showPayrollEmployeesRouter from "./routes/Payroll/PayrollEmployees/showPayrollEmployees.js";
-import editPayrollEmployeeRouter from "./routes/Payroll/PayrollEmployees/editPayrollEmployees.js";
-import deletePayrollEmployeeRouter from "./routes/Payroll/PayrollEmployees/deletePayrollEmployee.js";
-import { initializeDatabase } from "./config/initializeDatabase.js"; // Adjust the path accordingly
+import registerUserRouter from "./src/routes/Users/registerUser.js";
+import loginUserRouter from "./src/routes/Users/loginUser.js";
+import addPayrollListsRouter from "./src/routes/Payroll/createPayroll.js";
+import payrollListsRouter from "./src/routes/Payroll/payrollLists.js";
+import deletePayrollRouter from "./src/routes/Payroll/deletePayroll.js";
+import editPayrollRouter from "./src/routes/Payroll/editPayroll.js";
+import getPayrollContentRouter from "./src/routes/Payroll/PayrollContentOnly.js";
+import showJobPositions from "./src/routes/Payroll/JobPosition/showJobPositions.js";
+import addJobpPositionRouter from "./src/routes/Payroll/JobPosition/addJobPosition.js";
+import deleteJobPositionRouter from "./src/routes/Payroll/JobPosition/deleteJobPositions.js";
+import editJobPositionRouter from "./src/routes/Payroll/JobPosition/editJobPosition.js";
+import addPayrollEmployeesRouter from "./src/routes/Payroll/PayrollEmployees/addPayrollEmployees.js";
+import showPayrollEmployeesRouter from "./src/routes/Payroll/PayrollEmployees/showPayrollEmployees.js";
+import editPayrollEmployeeRouter from "./src/routes/Payroll/PayrollEmployees/editPayrollEmployees.js";
+import deletePayrollEmployeeRouter from "./src/routes/Payroll/PayrollEmployees/deletePayrollEmployee.js";
+import { initializeDatabase } from "./src/config/initializeDatabase.js"; // Adjust the path accordingly
 import cors from "cors";
 
 const { json } = pkg;
