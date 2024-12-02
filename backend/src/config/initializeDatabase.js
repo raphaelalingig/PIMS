@@ -8,7 +8,7 @@ export async function initializeDatabase() {
   };
 
   try {
-    // Connect to MySQL without specifying a database
+    // Connect to MySQL without specifying a database.
     const connection = await createConnection(configWithoutDb);
 
     // Create the database if it doesn't exist
