@@ -4,7 +4,9 @@ export async function initializeDatabase() {
   // Initial connection configuration without database and password
   const configWithoutDb = {
     host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
     user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
   };
 
   try {
@@ -12,8 +14,7 @@ export async function initializeDatabase() {
     const connection = await createConnection(configWithoutDb);
 
     // Create the database if it doesn't exist
-    await connection.query(`CREATE DATABASE IF NOT EXISTS payroll_db`);
-    console.log("Database 'payroll_db' checked/created");
+    await connection.changeUser({ database: "railway" });
 
     // Switch to the newly created database
     await connection.changeUser({ database: "payroll_db" });
