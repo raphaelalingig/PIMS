@@ -122,15 +122,18 @@ export default function BoxReports({ payrollName, payrollID }) {
             <div className="space-y-2"></div>
           </div>
           <div
-            className="p-4 bg-white dark:bg-gray-700 rounded-md border text-left"
+            className="p-4 bg-white dark:bg-gray-700 rounded-md border text-left overflow-y-auto"
             style={{ width: "249px", height: "139px" }}
           >
             <h1 className="font-bold text-base dark:text-white">
               Position/Job Title
             </h1>
-            <div className="space-y-2">
+            <div className="space-y-2 ">
               {jobPositions.map((positionData, index) => (
-                <div key={index} className="flex justify-between items-center">
+                <div
+                  key={index}
+                  className="flex justify-between items-center overflow-y-auto"
+                >
                   <span className="font-medium dark:text-white">
                     {index + 1}. {positionData.title} {/* Correct field */}
                   </span>

@@ -16,6 +16,7 @@ import addPayrollEmployeesRouter from "./src/routes/Payroll/PayrollEmployees/add
 import showPayrollEmployeesRouter from "./src/routes/Payroll/PayrollEmployees/showPayrollEmployees.js";
 import editPayrollEmployeeRouter from "./src/routes/Payroll/PayrollEmployees/editPayrollEmployees.js";
 import deletePayrollEmployeeRouter from "./src/routes/Payroll/PayrollEmployees/deletePayrollEmployee.js";
+import generateTokenRouter from "./src/routes/Payroll/ViewPayrollProfile/generateToken.js";
 import { initializeDatabase } from "./src/config/initializeDatabase.js"; // Adjust the path accordingly
 import cors from "cors";
 
@@ -73,7 +74,9 @@ app.use(json());
     app.use("/api/delete-job-positions", deleteJobPositionRouter);
     app.use("/api/edit-job-positions", editJobPositionRouter);
 
-    // Payroll Entries
+    // ViewPayrollProfile
+
+    app.use("/api/generate-share-token", generateTokenRouter);
 
     // Base Route
     app.get("/", (req, res) => {

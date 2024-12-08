@@ -11,6 +11,7 @@ import AuthenticatedRoute from "./components/CheckifAuthenticated/AuthenticatedR
 import PayrollContent from "./pages/GetStarted/Authenticated/PayrollNameContent/PayrollContent";
 import { ToastContainer } from "react-toastify"; // Import ToastContainer
 import "react-toastify/dist/ReactToastify.css"; // Import CSS for toast notifications
+import ViewPayrollProfile from "./pages/GetStarted/Authenticated/PayrollNameContent/ViewPayrollProfile";
 
 function App() {
   return (
@@ -53,6 +54,7 @@ function App() {
               </AuthenticatedRoute>
             }
           />
+          <Route path="/view/:token" element={<ViewPayrollProfile />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

@@ -69,6 +69,14 @@ export async function initializeDatabase() {
                 job_position_id INT,
                 FOREIGN KEY (job_position_id) REFERENCES JobPositions(job_position_id)
       )`,
+      `CREATE TABLE IF NOT EXISTS ShareToken( 
+        share_token_id INT PRIMARY KEY AUTO_INCREMENT,
+        user_id INT,
+        FOREIGN KEY (user_id) REFERENCES Users(user_id),
+        employee_id INT,
+        share_token VARCHAR(255), 
+        created_date DATETIME DEFAULT CURRENT_TIMESTAMP
+      )`,
     ];
 
     // Execute table creation queries
