@@ -9,8 +9,8 @@ import AuthenticatedDashboard from "./pages/GetStarted/Authenticated/Authenticat
 import { AuthProvider } from "./context/AuthContext";
 import AuthenticatedRoute from "./components/CheckifAuthenticated/AuthenticatedRoute";
 import PayrollContent from "./pages/GetStarted/Authenticated/PayrollNameContent/PayrollContent";
-import { ToastContainer } from 'react-toastify'; // Import ToastContainer
-import 'react-toastify/dist/ReactToastify.css'; // Import CSS for toast notifications
+import { ToastContainer } from "react-toastify"; // Import ToastContainer
+import "react-toastify/dist/ReactToastify.css"; // Import CSS for toast notifications
 
 function App() {
   return (
@@ -47,7 +47,11 @@ function App() {
           />
           <Route
             path="/PayrollContent/:id/:name"
-            element={<PayrollContent />}
+            element={
+              <AuthenticatedRoute>
+                <PayrollContent />
+              </AuthenticatedRoute>
+            }
           />
         </Routes>
       </BrowserRouter>
