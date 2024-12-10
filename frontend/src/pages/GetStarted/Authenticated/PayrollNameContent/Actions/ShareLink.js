@@ -10,8 +10,8 @@ export default function ShareLink({
   //console.log("isShareLinkOpen:", isShareLinkOpen);
 
   const closeShareTokenModal = () => {
-      setIsShareLinkOpen(false);
-      setShareToken(null);
+    setIsShareLinkOpen(false);
+    setShareToken(null);
   };
 
   const handleCopyToClipboard = async () => {
@@ -67,7 +67,7 @@ export default function ShareLink({
           <div class="relative bg-white rounded-lg shadow dark:bg-gray-800">
             <div class="flex items-center justify-between p-4 md:p-5">
               <h3 class="text-lg text-gray-500 dark:text-gray-400">
-                Share course
+                Share Link
               </h3>
               <button
                 type="button"
@@ -98,7 +98,7 @@ export default function ShareLink({
                 for="course-url"
                 class="text-sm font-medium text-gray-900 dark:text-white mb-2 block"
               >
-                Share the course link below with your friends:
+                Share the course link below:
               </label>
               <div class="relative mb-4">
                 <input

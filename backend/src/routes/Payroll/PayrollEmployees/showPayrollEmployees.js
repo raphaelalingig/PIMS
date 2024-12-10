@@ -16,9 +16,13 @@ router.post("/", async (req, res) => {
     }
 
     const query = `
-      SELECT * FROM PayrollEmployees 
-      WHERE payroll_list_id = ?
-      ORDER BY created_date DESC
+      SELECT 
+  pe.*,
+  pl.list_name as payroll_name
+FROM PayrollEmployees pe
+LEFT JOIN PayrollLists pl ON pe.payroll_list_id = pl.payroll_list_id
+WHERE pe.payroll_list_id = ?
+ORDER BY pe.created_date DESC
     `;
 
     const [employees] = await db.query(query, [payroll_list_id]);

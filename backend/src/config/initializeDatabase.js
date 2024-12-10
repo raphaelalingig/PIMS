@@ -49,7 +49,7 @@ export async function initializeDatabase() {
       `CREATE TABLE IF NOT EXISTS PayrollEmployees (
                 employee_id INT PRIMARY KEY AUTO_INCREMENT,
                 payroll_list_id INT,
-                FOREIGN KEY (payroll_list_id) REFERENCES PayrollLists(payroll_list_id),
+                FOREIGN KEY (payroll_list_id) REFERENCES PayrollLists(payroll_list_id) ON DELETE CASCADE,
                 employee_name VARCHAR(100),
                 job_position VARCHAR(100),
                 mobile_number VARCHAR(15),
@@ -74,6 +74,7 @@ export async function initializeDatabase() {
         user_id INT,
         FOREIGN KEY (user_id) REFERENCES Users(user_id),
         employee_id INT,
+        FOREIGN KEY (employee_id) REFERENCES PayrollEmployees(employee_id),
         share_token VARCHAR(255), 
         created_date DATETIME DEFAULT CURRENT_TIMESTAMP
       )`,

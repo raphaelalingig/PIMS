@@ -11,6 +11,7 @@ export default function PayrollTable() {
   const [editPayrollLists, setEditPayrollLists] = useState(false);
   const [payrollLists, setPayrollLists] = useState([]);
   const [user_id, setUser_id] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [editValue, setEditValue] = useState({
     payroll_id: null,
@@ -40,6 +41,7 @@ export default function PayrollTable() {
       console.error("Error fetching payroll lists:", error);
     }
   };
+
   useEffect(() => {
     fetchPayrollLists();
   }, [user_id]);
@@ -78,31 +80,28 @@ export default function PayrollTable() {
             payroll_list_id: payroll_id,
           });
           if (response.status === 200) {
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your file has been deleted.",
+              icon: "success",
+              confirmButtonColor: "#3085d6",
+            });
             fetchPayrollLists();
           }
         } catch (error) {
           console.error("Error deleting payroll list:", error);
         }
-        Swal.fire({
-          title: "Deleted!",
-          text: "Your file has been deleted.",
-          icon: "success",
-          confirmButtonColor: "#3085d6",
-        });
       }
     });
   };
 
-  const handlePayrollNameClick = (
-    payroll_id,
-    list_name,
-    description,
-    created_date,
-    status,
-    navigate
-  ) => {
-    console.log("Payroll name clicked");
-  };
+  // Filter payroll lists based on search term
+  const filteredPayrollLists = payrollLists.filter(
+    (product) =>
+      product.list_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.payroll_list_id.toString().includes(searchTerm)
+  );
+
   return (
     <div className="p-4 relative overflow-x-auto sm:rounded-lg">
       <div className="flex flex-col sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
@@ -122,6 +121,8 @@ export default function PayrollTable() {
           </div>
           <input
             type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="Search Payroll name/ID"
           />
@@ -130,7 +131,7 @@ export default function PayrollTable() {
           <button
             id="dropdownRadioButton"
             data-dropdown-toggle="dropdownRadio"
-            class="mr-2 gap-1 inline-flex items-center text-white bg-blue-700 hover:bg-blue-800 border border-black focus:outline-none  focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-3 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+            className="mr-2 gap-1 inline-flex items-center text-white bg-blue-700 hover:bg-blue-800 border border-black focus:outline-none  focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-3 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
             type="button"
             onClick={() => setAddPayrollLists(true)}
           >
@@ -140,7 +141,7 @@ export default function PayrollTable() {
               viewBox="0 0 24 24"
               stroke-width="1.5"
               stroke="currentColor"
-              class="size-5"
+              className="size-5"
             >
               <path
                 stroke-linecap="round"
@@ -183,8 +184,8 @@ export default function PayrollTable() {
           </tr>
         </thead>
         <tbody>
-          {payrollLists.length > 0 ? (
-            payrollLists.map((product) => {
+          {filteredPayrollLists.length > 0 ? (
+            filteredPayrollLists.map((product) => {
               const formattedDate = moment(product.created_date).format(
                 "YYYY-MM-DD hh:mm:ss A"
               );
@@ -198,7 +199,7 @@ export default function PayrollTable() {
 
                   <th
                     scope="row"
-                    class="px-6 py-4 hover:underline cursor-pointer font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                    className="px-6 py-4 hover:underline cursor-pointer font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
                     <Link
                       to={`/PayrollContent/${product.payroll_list_id}/${product.list_name}`}
@@ -240,7 +241,7 @@ export default function PayrollTable() {
                           viewBox="0 0 24 24"
                           stroke-width="1.5"
                           stroke="blue"
-                          class="size-5"
+                          className="size-5"
                         >
                           <path
                             stroke-linecap="round"
@@ -273,7 +274,7 @@ export default function PayrollTable() {
                           viewBox="0 0 24 24"
                           stroke-width="1.5"
                           stroke="currentColor"
-                          class="size-6"
+                          className="size-6"
                         >
                           <path
                             stroke-linecap="round"
@@ -297,7 +298,7 @@ export default function PayrollTable() {
                     viewBox="0 0 24 24"
                     stroke-width="1.5"
                     stroke="currentColor"
-                    class="size-6"
+                    className="size-6"
                   >
                     <path
                       stroke-linecap="round"
@@ -305,7 +306,11 @@ export default function PayrollTable() {
                       d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"
                     />
                   </svg>
-                  <h1>No Payroll Lists Available</h1>
+                  <h1>
+                    {searchTerm
+                      ? `No Payroll Lists found matching "${searchTerm}"`
+                      : "No Payroll Lists Available"}
+                  </h1>
                 </div>
               </td>
             </tr>

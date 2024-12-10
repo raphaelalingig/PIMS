@@ -9,6 +9,8 @@ import EditEmployee from "./Actions/EditEmployee";
 import { Bounce, toast, ToastContainer } from "react-toastify";
 import PieChart from "./Reports/PieChart";
 import ShareLink from "./Actions/ShareLink";
+import exportToExcel from "../../../../hooks/ExportToExcel";
+import useEmployeeSearch from "../../../../hooks/useEmployeeSearch";
 
 export default function PayrollContent() {
   const { id, name } = useParams();
@@ -19,9 +21,10 @@ export default function PayrollContent() {
 
   const [isAddEmployeeModalOpen, setIsAddEmployeeModalOpen] = useState(false);
   const [isLoading, setisLoading] = useState(false);
-  const [filteredEmployees, setFilteredEmployees] = useState([]);
   const [payrollEmployees, setPayrollEmployees] = useState([]);
   const [shareToken, setShareToken] = useState(null);
+  const { searchTerm, filteredEmployees, handleSearchChange } =
+    useEmployeeSearch(payrollEmployees);
   const [editEmployeeDetails, setEditEmployeeDetails] = useState({
     employee_id: 0,
     employee_name: "",
@@ -195,12 +198,36 @@ export default function PayrollContent() {
               <input
                 type="text"
                 id="table-search"
+                value={searchTerm}
+                onChange={handleSearchChange}
                 class="block mt-1 p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Search employee name/ID"
               />
             </div>
           </div>
           <div className="flex gap-3">
+            <button
+              class="gap-1 inline-flex items-center text-white bg-blue-700 hover:bg-blue-800 border border-black focus:outline-none  focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-3 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+              type="button"
+              onClick={() => exportToExcel(payrollEmployees)}
+            >
+              {" "}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"
+                />
+              </svg>
+              Export to Excel
+            </button>
             <button
               class="gap-1 inline-flex items-center text-white bg-blue-700 hover:bg-blue-800 border border-black focus:outline-none  focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-3 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
               type="button"
@@ -317,7 +344,7 @@ export default function PayrollContent() {
                   scope="col"
                   class="px-6 py-3 border border-black dark:border-white"
                 >
-                  Additional Payment
+                  Earnings and Deductions
                 </th>
                 <th
                   scope="col"
@@ -360,7 +387,7 @@ export default function PayrollContent() {
                   </td>
                 </tr>
               ) : (
-                payrollEmployees.map((employee) => {
+                filteredEmployees.map((employee) => {
                   const formatDate = (dateString) => {
                     try {
                       if (
