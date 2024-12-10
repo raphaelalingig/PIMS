@@ -1,7 +1,55 @@
 import React from "react";
+import api_url, { BASE_FRONTEND_URL } from "../../../../../components/api_url";
 
-export default function ShareLink({ isShareLinkOpen, setIsShareLinkOpen }) {
+export default function ShareLink({
+  isShareLinkOpen,
+  setIsShareLinkOpen,
+  shareToken,
+  setShareToken,
+}) {
   //console.log("isShareLinkOpen:", isShareLinkOpen);
+
+  const closeShareTokenModal = () => {
+      setIsShareLinkOpen(false);
+      setShareToken(null);
+  };
+
+  const handleCopyToClipboard = async () => {
+    // Get the input field value
+    const inputElement = document.getElementById("course-url");
+    const textToCopy = inputElement.value;
+
+    try {
+      // Copy text to clipboard
+      await navigator.clipboard.writeText(textToCopy);
+
+      // Get UI elements
+      const defaultIcon = document.getElementById("default-icon-course-url");
+      const successIcon = document.getElementById("success-icon-course-url");
+      const defaultTooltip = document.getElementById(
+        "default-tooltip-message-course-url"
+      );
+      const successTooltip = document.getElementById(
+        "success-tooltip-message-course-url"
+      );
+
+      // Show success state
+      defaultIcon.classList.add("hidden");
+      successIcon.classList.remove("hidden");
+      defaultTooltip.classList.add("hidden");
+      successTooltip.classList.remove("hidden");
+
+      // Reset back to default state after 2 seconds
+      setTimeout(() => {
+        defaultIcon.classList.remove("hidden");
+        successIcon.classList.add("hidden");
+        defaultTooltip.classList.remove("hidden");
+        successTooltip.classList.add("hidden");
+      }, 2000);
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+    }
+  };
 
   return (
     <div>
@@ -25,7 +73,7 @@ export default function ShareLink({ isShareLinkOpen, setIsShareLinkOpen }) {
                 type="button"
                 class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-700 dark:hover:text-white"
                 data-modal-toggle="course-modal"
-                onClick={() => setIsShareLinkOpen(false)}
+                onClick={() => closeShareTokenModal()}
               >
                 <svg
                   class="w-3 h-3"
@@ -57,11 +105,12 @@ export default function ShareLink({ isShareLinkOpen, setIsShareLinkOpen }) {
                   id="course-url"
                   type="text"
                   class="col-span-6 bg-gray-50 border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  value="https://flowbite.com/docs/components/alerts/"
+                  value={`${BASE_FRONTEND_URL}/view/${shareToken}`}
                   disabled
                   readonly
                 />
                 <button
+                  onClick={handleCopyToClipboard}
                   data-copy-to-clipboard-target="course-url"
                   data-tooltip-target="tooltip-course-url"
                   class="absolute end-2 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg p-2 inline-flex items-center justify-center"
@@ -116,7 +165,7 @@ export default function ShareLink({ isShareLinkOpen, setIsShareLinkOpen }) {
                 type="button"
                 data-modal-hide="course-modal"
                 class="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                onClick={() => setIsShareLinkOpen(false)}
+                onClick={() => closeShareTokenModal()}
               >
                 Close
               </button>

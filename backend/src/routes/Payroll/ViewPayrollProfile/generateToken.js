@@ -8,7 +8,9 @@ router.post("/", async (req, res) => {
   const { user_id, employee_id } = req.body;
 
   if (!user_id || !employee_id) {
-    return res.status(400).json({ message: "user_id and employee_id are required." });
+    return res
+      .status(400)
+      .json({ message: "user_id and employee_id are required." });
   }
 
   try {
@@ -31,7 +33,23 @@ router.post("/", async (req, res) => {
       return res.status(404).json({ message: "User not found." });
     }
 
-    // Generate a random token
+    // Check if a share token already exists for this employee_id
+    const [existingToken] = await db.query(
+      "SELECT share_token_id, share_token FROM ShareToken WHERE employee_id = ? LIMIT 1",
+      [employee_id]
+    );
+
+    // If token exists, return it
+    if (existingToken && existingToken.length > 0) {
+      return res.json({
+        success: true,
+        share_token: existingToken[0].share_token,
+        share_token_id: existingToken[0].share_token_id,
+        message: "Existing share token retrieved successfully.",
+      });
+    }
+
+    // If no existing token, generate a new one
     const token = crypto.randomBytes(3).toString("hex");
 
     // Insert the token into the ShareToken table
@@ -44,16 +62,18 @@ router.post("/", async (req, res) => {
       throw new Error("Failed to insert token into database");
     }
 
-    // Return success response with token
+    // Return success response with new token
     res.json({
       success: true,
       share_token: token,
       share_token_id: result.insertId,
-      message: "Token generated and stored successfully.",
+      message: "New token generated and stored successfully.",
     });
   } catch (error) {
     console.error("Error generating/storing token:", error);
-    res.status(500).json({ error: "Server error while processing your request." });
+    res
+      .status(500)
+      .json({ error: "Server error while processing your request." });
   }
 });
 

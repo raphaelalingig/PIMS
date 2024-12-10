@@ -21,6 +21,7 @@ export default function PayrollContent() {
   const [isLoading, setisLoading] = useState(false);
   const [filteredEmployees, setFilteredEmployees] = useState([]);
   const [payrollEmployees, setPayrollEmployees] = useState([]);
+  const [shareToken, setShareToken] = useState(null);
   const [editEmployeeDetails, setEditEmployeeDetails] = useState({
     employee_id: 0,
     employee_name: "",
@@ -41,6 +42,8 @@ export default function PayrollContent() {
     job_position_id: 0,
   });
 
+  const [user_id, setUser_id] = useState("");
+
   const theme = localStorage.getItem("color-theme");
 
   console.log("ID: ", id);
@@ -49,6 +52,14 @@ export default function PayrollContent() {
   useEffect(() => {
     fetchPayrollEMployees();
   }, [id]);
+
+  useEffect(() => {
+    const userCredentials = JSON.parse(localStorage.getItem("userCredentials"));
+
+    if (userCredentials?.Data?.user_id) {
+      setUser_id(userCredentials.Data.user_id);
+    }
+  }, []);
 
   const fetchPayrollEMployees = async () => {
     try {
@@ -135,6 +146,21 @@ export default function PayrollContent() {
     } catch (error) {
       console.log("Error in deleting employee:", error);
     }
+  };
+
+  const handleShareLink = async (employee_id) => {
+    try {
+      const response = await api_url.post("/generate-share-token", {
+        user_id,
+        employee_id,
+      });
+      if (response.status === 200) {
+        console.log(response.data);
+        setShareToken(response.data.share_token);
+      }
+    } catch (error) {}
+
+    setIsShareLinkOpen(true);
   };
   return (
     <div className="bg-[#F4F6FA] dark:bg-gray-900 min-h-screen ">
@@ -446,9 +472,9 @@ export default function PayrollContent() {
                       </td>
 
                       <td className="px-6 py-4 border-r border-black dark:border-white">
-                        <div className="flex">
+                        <div className="flex gap-3">
                           <div
-                            className="editIcon mr-2"
+                            className="editIcon"
                             onClick={() =>
                               handleEditEmployee(
                                 employee.employee_id,
@@ -530,7 +556,9 @@ export default function PayrollContent() {
 
                           <div
                             className="share"
-                            onClick={() => setIsShareLinkOpen(true)}
+                            onClick={() =>
+                              handleShareLink(employee.employee_id)
+                            }
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -550,6 +578,8 @@ export default function PayrollContent() {
                               <ShareLink
                                 isShareLinkOpen={isShareLinkOpen}
                                 setIsShareLinkOpen={setIsShareLinkOpen}
+                                shareToken={shareToken}
+                                setShareToken={setShareToken}
                               />
                             )}
                           </div>
