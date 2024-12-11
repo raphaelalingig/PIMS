@@ -4,19 +4,15 @@ export async function initializeDatabase() {
   // Initial connection configuration without database and password
   const configWithoutDb = {
     host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
     user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: "railway",
   };
-
   try {
     // Connect to MySQL without specifying a database
     const connection = await createConnection(configWithoutDb);
-
-    // Create the database if it doesn't exist
-    await connection.query(`CREATE DATABASE IF NOT EXISTS payroll_db`);
-    console.log("Database 'payroll_db' checked/created");
-
-    // Switch to the newly created database
-    await connection.changeUser({ database: "payroll_db" });
+    console.log("Connected to Railway database successfully");
 
     // Table creation queries
     const tables = [
@@ -82,13 +78,27 @@ export async function initializeDatabase() {
 
     // Execute table creation queries
     for (const query of tables) {
-      await connection.query(query);
+      try {
+        await connection.query(query);
+        console.log(
+          `Table created/verified successfully: ${query.split("(")[0].trim()}`
+        );
+      } catch (tableError) {
+        console.error("Table creation error for query:", query);
+        console.error("Specific error:", tableError);
+      }
     }
 
-    console.log("All tables created successfully!");
+    const [existingTables] = await connection.query("SHOW TABLES");
+    console.log("Existing Tables:", existingTables);
+
     await connection.end();
   } catch (error) {
-    console.error("Error setting up the database:", error);
+    console.error("Comprehensive Database Connection Error:", {
+      message: error.message,
+      code: error.code,
+      errno: error.errno,
+    });
   }
 }
 

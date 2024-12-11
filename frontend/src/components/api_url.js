@@ -1,8 +1,8 @@
 import axios from "axios";
 
 // Define your base URL
-const BASE_URL = "http://localhost:5000/api";
-export const BASE_FRONTEND_URL = "http://localhost:3000";
+const BASE_URL = "http://pims-production.up.railway.app/api";
+export const BASE_FRONTEND_URL = "http://pims-production.up.railway.app";
 
 // Create an axios instance with the base URL
 const api_url = axios.create({
