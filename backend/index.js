@@ -31,11 +31,9 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "payrollmanagementsystem.up.railway.app",
       "https://payrollmanagementsystem.up.railway.app",
-      "payrollmanagementsystem.up.railway.app:8080",
+      "https://pims-production.up.railway.app"
     ],
-
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })

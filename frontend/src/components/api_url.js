@@ -1,10 +1,10 @@
+// api_url.js
 import axios from "axios";
 
-// Define your base URL
-const BASE_URL = "http://pims-production.up.railway.app/api";
-export const BASE_FRONTEND_URL = "http://pims-production.up.railway.app";
+// Update BASE_URL to use HTTPS
+const BASE_URL = "https://pims-production.up.railway.app/api";
+export const BASE_FRONTEND_URL = "https://pims-production.up.railway.app";
 
-// Create an axios instance with the base URL
 const api_url = axios.create({
   baseURL: BASE_URL,
   headers: {
