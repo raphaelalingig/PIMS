@@ -1,5 +1,5 @@
 import React from "react";
-import api_url, { BASE_FRONTEND_URL } from "../../../../../components/api_url";
+import { Link } from "react-router-dom";
 
 export default function ShareLink({
   isShareLinkOpen,
@@ -15,15 +15,12 @@ export default function ShareLink({
   };
 
   const handleCopyToClipboard = async () => {
-    // Get the input field value
     const inputElement = document.getElementById("course-url");
     const textToCopy = inputElement.value;
 
     try {
-      // Copy text to clipboard
       await navigator.clipboard.writeText(textToCopy);
 
-      // Get UI elements
       const defaultIcon = document.getElementById("default-icon-course-url");
       const successIcon = document.getElementById("success-icon-course-url");
       const defaultTooltip = document.getElementById(
@@ -33,13 +30,11 @@ export default function ShareLink({
         "success-tooltip-message-course-url"
       );
 
-      // Show success state
       defaultIcon.classList.add("hidden");
       successIcon.classList.remove("hidden");
       defaultTooltip.classList.add("hidden");
       successTooltip.classList.remove("hidden");
 
-      // Reset back to default state after 2 seconds
       setTimeout(() => {
         defaultIcon.classList.remove("hidden");
         successIcon.classList.add("hidden");
@@ -66,9 +61,7 @@ export default function ShareLink({
         <div class="relative p-4 w-full max-w-lg max-h-full">
           <div class="relative bg-white rounded-lg shadow dark:bg-gray-800">
             <div class="flex items-center justify-between p-4 md:p-5">
-              <h3 class="text-lg text-black dark:text-gray-400">
-                Share Link
-              </h3>
+              <h3 class="text-lg text-black dark:text-gray-400">Share Link</h3>
               <button
                 type="button"
                 class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-700 dark:hover:text-white"
@@ -105,48 +98,50 @@ export default function ShareLink({
                   id="course-url"
                   type="text"
                   class="col-span-6 bg-gray-50 border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  value={`${BASE_FRONTEND_URL}/view/${shareToken}`}
+                  value={`https://payrollmanagementsystem.up.railway.app/view/${shareToken}`}
                   disabled
                   readonly
                 />
-                <button
-                  onClick={handleCopyToClipboard}
-                  data-copy-to-clipboard-target="course-url"
-                  data-tooltip-target="tooltip-course-url"
-                  class="absolute end-2 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg p-2 inline-flex items-center justify-center"
-                >
-                  <span id="default-icon-course-url">
-                    <svg
-                      class="w-3.5 h-3.5"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      viewBox="0 0 18 20"
-                    >
-                      <path d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2Zm-3 14H5a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2Zm0-4H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Zm0-5H5a1 1 0 0 1 0-2h2V2h4v2h2a1 1 0 1 1 0 2Z" />
-                    </svg>
-                  </span>
-                  <span
-                    id="success-icon-course-url"
-                    class="hidden inline-flex items-center"
+                <Link to={`/view/${shareToken}`}>
+                  <button
+                    onClick={handleCopyToClipboard}
+                    data-copy-to-clipboard-target="course-url"
+                    data-tooltip-target="tooltip-course-url"
+                    class="absolute end-2 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg p-2 inline-flex items-center justify-center"
                   >
-                    <svg
-                      class="w-3.5 h-3.5 text-blue-700 dark:text-blue-500"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 16 12"
+                    <span id="default-icon-course-url">
+                      <svg
+                        class="w-3.5 h-3.5"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 18 20"
+                      >
+                        <path d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2Zm-3 14H5a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2Zm0-4H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Zm0-5H5a1 1 0 0 1 0-2h2V2h4v2h2a1 1 0 1 1 0 2Z" />
+                      </svg>
+                    </span>
+                    <span
+                      id="success-icon-course-url"
+                      class="hidden inline-flex items-center"
                     >
-                      <path
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M1 5.917 5.724 10.5 15 1.5"
-                      />
-                    </svg>
-                  </span>
-                </button>
+                      <svg
+                        class="w-3.5 h-3.5 text-blue-700 dark:text-blue-500"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 16 12"
+                      >
+                        <path
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M1 5.917 5.724 10.5 15 1.5"
+                        />
+                      </svg>
+                    </span>
+                  </button>
+                </Link>
                 <div
                   id="tooltip-course-url"
                   role="tooltip"

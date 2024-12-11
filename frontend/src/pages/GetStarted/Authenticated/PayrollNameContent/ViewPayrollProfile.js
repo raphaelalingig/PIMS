@@ -3,11 +3,13 @@ import Navbar from "../../../../components/Navbar";
 import userLogo from "../../../../assets/images/userLogo.gif";
 import { useParams } from "react-router-dom";
 import api_url from "../../../../components/api_url";
+import { toast } from "react-toastify";
 
 export default function ViewPayrollProfile() {
   const { token } = useParams();
   const [profileData, setProfileData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("en-US", {
@@ -45,23 +47,53 @@ export default function ViewPayrollProfile() {
   };
 
   useEffect(() => {
+    console.log("Share Token received:", token);
+
     const fetchUserProfile = async () => {
       try {
         setIsLoading(true);
         const response = await api_url.post(`/view-payroll-profile/${token}`);
+
+        console.log("Full response:", response); // Debug log
+
         if (response.status === 200 && response.data.success) {
           setProfileData(response.data.Data);
           console.log("User Profile:", response.data.Data);
+        } else {
+          throw new Error(response.data.error || "Unable to fetch profile");
         }
       } catch (error) {
         console.error("Error fetching profile:", error);
+
+        // More detailed error handling
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          console.error("Error response data:", error.response.data);
+          console.error("Error response status:", error.response.status);
+
+          toast.error(
+            `Error: ${error.response.status} - ${
+              error.response.data.error || "Unable to load profile"
+            }`
+          );
+          setError(error.response.data.error || "Unable to load profile");
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.error("No response received");
+          toast.error("No response from server");
+          setError("No response from server");
+        } else {
+          // Something happened in setting up the request
+          console.error("Error setting up request", error.message);
+          toast.error("Unable to fetch profile");
+          setError(error.message);
+        }
       } finally {
         setIsLoading(false);
       }
     };
-    if (token) {
-      fetchUserProfile();
-    }
+
+    fetchUserProfile();
   }, [token]);
 
   // Render loading state
@@ -74,10 +106,10 @@ export default function ViewPayrollProfile() {
   }
 
   // Render error state if no data
-  if (!profileData) {
+  if (error || !profileData) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        Unable to load profile data
+      <div className="flex justify-center items-center min-h-screen text-red-500">
+        Unable to load profile data. {error}
       </div>
     );
   }
