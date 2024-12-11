@@ -32,7 +32,8 @@ app.use(
     origin: [
       "http://localhost:3000",
       "https://payrollmanagementsystem.up.railway.app",
-      "https://pims-production.up.railway.app"
+      "https://pims-production.up.railway.app",
+      "payrollmanagementsystem.up.railway.app:8080",
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
