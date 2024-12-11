@@ -66,7 +66,7 @@ export default function ShareLink({
         <div class="relative p-4 w-full max-w-lg max-h-full">
           <div class="relative bg-white rounded-lg shadow dark:bg-gray-800">
             <div class="flex items-center justify-between p-4 md:p-5">
-              <h3 class="text-lg text-gray-500 dark:text-gray-400">
+              <h3 class="text-lg text-black dark:text-gray-400">
                 Share Link
               </h3>
               <button

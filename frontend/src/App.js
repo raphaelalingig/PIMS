@@ -12,6 +12,7 @@ import PayrollContent from "./pages/GetStarted/Authenticated/PayrollNameContent/
 import { ToastContainer } from "react-toastify"; // Import ToastContainer
 import "react-toastify/dist/ReactToastify.css"; // Import CSS for toast notifications
 import ViewPayrollProfile from "./pages/GetStarted/Authenticated/PayrollNameContent/ViewPayrollProfile";
+import UnauthenticatedRoute from "./hooks/UnauthenticatedRoute";
 
 function App() {
   return (
@@ -32,8 +33,22 @@ function App() {
         />
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route
+            path="/login"
+            element={
+              <UnauthenticatedRoute>
+                <Login />
+              </UnauthenticatedRoute>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <UnauthenticatedRoute>
+                <Register />
+              </UnauthenticatedRoute>
+            }
+          />
           <Route
             path="/unauthenticated-dashboard"
             element={<UnAuthenticatedDashboard />}

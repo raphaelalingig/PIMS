@@ -43,7 +43,7 @@ export async function initializeDatabase() {
                 payroll_list_id INT,
                 title VARCHAR(100),
                 salary DECIMAL(10, 2),
-                FOREIGN KEY (payroll_list_id) REFERENCES PayrollLists(payroll_list_id),
+                FOREIGN KEY (payroll_list_id) REFERENCES PayrollLists(payroll_list_id) ON DELETE CASCADE,
                 created_date DATETIME DEFAULT CURRENT_TIMESTAMP
       )`,
       `CREATE TABLE IF NOT EXISTS PayrollEmployees (
@@ -67,14 +67,14 @@ export async function initializeDatabase() {
                 salary_date DATE,
                 created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
                 job_position_id INT,
-                FOREIGN KEY (job_position_id) REFERENCES JobPositions(job_position_id)
+                FOREIGN KEY (job_position_id) REFERENCES JobPositions(job_position_id) ON DELETE CASCADE
       )`,
       `CREATE TABLE IF NOT EXISTS ShareToken( 
         share_token_id INT PRIMARY KEY AUTO_INCREMENT,
         user_id INT,
         FOREIGN KEY (user_id) REFERENCES Users(user_id),
         employee_id INT,
-        FOREIGN KEY (employee_id) REFERENCES PayrollEmployees(employee_id),
+        FOREIGN KEY (employee_id) REFERENCES PayrollEmployees(employee_id) ON DELETE CASCADE,
         share_token VARCHAR(255), 
         created_date DATETIME DEFAULT CURRENT_TIMESTAMP
       )`,
