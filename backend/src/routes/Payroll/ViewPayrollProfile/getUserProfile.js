@@ -31,11 +31,11 @@ router.post("/:share_token", async (req, res) => {
     // Get employee information
     const [getEmployeeInfo] = await db.query(
       `SELECT 
-  pe.*,
-  pl.list_name as payroll_name
-FROM PayrollEmployees pe
-LEFT JOIN PayrollLists pl ON pe.payroll_list_id = pl.payroll_list_id
-WHERE pe.employee_id = ?`,
+        pe.*,
+        pl.list_name as payroll_name
+      FROM PayrollEmployees pe
+      LEFT JOIN PayrollLists pl ON pe.payroll_list_id = pl.payroll_list_id
+      WHERE pe.employee_id = ?`,
       [getEmployeeID[0].employee_id]
     );
 

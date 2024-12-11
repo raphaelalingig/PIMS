@@ -173,20 +173,12 @@ export default function EditEmployee({
       };
 
       // Make the API call
-      const response = await fetch(
-        "http://localhost:5000/api/edit-payroll-employee",
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(employeeData),
-        }
+      const response = await api_url.put(
+        "/edit-payroll-employee",
+        employeeData
       );
 
-      const data = await response.json();
-
-      if (data.success) {
+      if (response.data.success) {
         // Show success message
         toast.success(
           `${editEmployeeDetails.employee_name} Employee added successfully!`,

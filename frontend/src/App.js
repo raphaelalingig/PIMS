@@ -69,7 +69,7 @@ function App() {
               </AuthenticatedRoute>
             }
           />
-          <Route path="/view/:token" element={<ViewPayrollProfile />} />
+          <Route path="/api/view/:token" element={<ViewPayrollProfile />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

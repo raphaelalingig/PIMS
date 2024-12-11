@@ -149,6 +149,10 @@ export default function AddEmployee({
   const handleAddEmployee = async (e) => {
     e.preventDefault();
 
+    const formattedSalaryDate = new Date(salaryDate)
+      .toISOString()
+      .split("T")[0];
+
     // Validate required fields
     if (
       !name ||
@@ -191,25 +195,14 @@ export default function AddEmployee({
       deduction_reason: isDeductions ? deductionsReasons : null,
       deductions_amount: isDeductions ? parseFloat(deductionsAmount) : 0,
       total_pay: parseFloat(salary), // Using the calculated salary from state
-      salary_date: salaryDate,
+      salary_date: formattedSalaryDate,
       job_position_id: job_position_id,
     };
 
     try {
-      const response = await fetch(
-        "http://localhost:5000/api/add-payroll-employees",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
+      const response = await api_url.post("/add-payroll-employees", payload);
 
-      const data = await response.json();
-
-      if (data.success) {
+      if (response.data.success) {
         toast.success(`${name} Employee added successfully!`, {
           position: "bottom-right",
           autoClose: 5000,
@@ -222,7 +215,6 @@ export default function AddEmployee({
           transition: Bounce,
         });
         setIsAddEmployeeModalOpen(false); // Close the modal
-
         fetchPayrollEMployees();
       } else {
         toast.success(`Failed to add employee: ${name} `, {

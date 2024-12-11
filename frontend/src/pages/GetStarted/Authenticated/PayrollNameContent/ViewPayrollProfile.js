@@ -49,7 +49,6 @@ export default function ViewPayrollProfile() {
       try {
         setIsLoading(true);
         const response = await api_url.post(`/view-payroll-profile/${token}`);
-
         if (response.status === 200 && response.data.success) {
           setProfileData(response.data.Data);
           console.log("User Profile:", response.data.Data);
